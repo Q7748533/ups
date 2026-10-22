@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cheapest Way to Ship Food And Perishables — Actual USPS Rates by Weight | ParcelRate</title>
+<meta name="description" content="What it really costs to ship food and perishables with USPS, at every weight tier. Published rates, not averages, plus the dimensional-weight trap that doubles the bill.">
+<link rel="canonical" href="https://parcelrate.example.com/ship/food/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1b5fd9">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cheapest Way to Ship Food And Perishables — Actual USPS Rates by Weight | ParcelRate">
+<meta property="og:description" content="What it really costs to ship food and perishables with USPS, at every weight tier. Published rates, not averages, plus the dimensional-weight trap that doubles the bill.">
+<meta property="og:url" content="https://parcelrate.example.com/ship/food/">
+<meta name="twitter:card" content="summary">
+<style>
+:root{
+  --ink:#16181d; --muted:#5d6470; --line:#e3e6ec; --bg:#ffffff; --soft:#f6f7f9;
+  --accent:#1b5fd9; --accent-soft:#eef3fd; --good:#0f7b45; --warn:#8a5a00;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+header.site{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:10}
+header.site .wrap{display:flex;align-items:center;gap:22px;height:60px}
+.brand{font-weight:700;font-size:17px;letter-spacing:-.01em;color:var(--ink)}
+.brand span{color:var(--accent)}
+nav.main{display:flex;gap:18px;font-size:14.5px;margin-left:auto;flex-wrap:nowrap;overflow:hidden}
+nav.main a{color:var(--muted);white-space:nowrap}
+nav.main a:hover{color:var(--ink)}
+nav.main a.on{color:var(--ink);font-weight:600}
+main{padding:38px 0 60px}
+h1{font-size:31px;line-height:1.2;letter-spacing:-.022em;margin:0 0 12px}
+h2{font-size:20px;letter-spacing:-.012em;margin:38px 0 12px;padding-top:6px}
+h3{font-size:16.5px;margin:26px 0 8px}
+p{margin:0 0 14px}
+.lede{font-size:17.5px;color:var(--muted);margin-bottom:24px;max-width:70ch}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:14px}
+.crumb a{color:var(--muted)}
+.stamp{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;
+  color:var(--muted);background:var(--soft);border:1px solid var(--line);
+  border-radius:6px;padding:7px 11px;margin:0 0 22px}
+.stamp b{color:var(--ink);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0 6px;
+  font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--soft);font-weight:600;font-size:12.5px;letter-spacing:.02em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+tbody tr:hover{background:#fbfcfd}
+td.num{font-family:var(--mono);font-size:13.5px}
+.best{color:var(--good);font-weight:700}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);
+  border-radius:8px;margin:16px 0}
+.scroll table{margin:0}
+.scroll thead th{position:sticky;top:0}
+.note{font-size:13.5px;color:var(--muted);margin:8px 0 0}
+.caveat{border-left:3px solid var(--warn);background:#fdf9ef;padding:12px 16px;
+  font-size:14px;margin:20px 0;border-radius:0 6px 6px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:22px 0}
+.card{border:1px solid var(--line);border-radius:9px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+.card .big{font-family:var(--mono);font-size:21px;color:var(--ink);font-weight:600;
+  display:block;margin:4px 0 6px}
+ul.tight{margin:0 0 16px;padding-left:20px}
+ul.tight li{margin-bottom:7px}
+footer.site{border-top:1px solid var(--line);padding:26px 0 40px;font-size:13px;
+  color:var(--muted);background:var(--soft)}
+footer.site .wrap{display:flex;gap:16px;flex-wrap:wrap}
+footer.site a{color:var(--muted)}
+.foot-links{margin-left:auto;display:flex;gap:16px;flex-wrap:wrap}
+code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5px;
+  border-radius:4px;border:1px solid var(--line)}
+.cta{border:1px solid var(--line);border-radius:9px;padding:18px 20px;margin:26px 0;
+  background:var(--soft)}
+.cta h3{margin:0 0 8px}
+@media(max-width:700px){
+  h1{font-size:25px}.lede{font-size:16px}
+  /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */
+  nav.main{gap:9px}
+  nav.main a{font-size:13px}
+  .wrap{padding:0 16px}
+  th,td{padding:7px 8px;font-size:13px}
+}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://parcelrate.example.com/"}, {"@type": "ListItem", "position": 2, "name": "By item", "item": "https://parcelrate.example.com/ship/"}, {"@type": "ListItem", "position": 3, "name": "Food & perishables", "item": "https://parcelrate.example.com/ship/food/"}]}</script>
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="brand" href="/">Parcel<span>Rate</span></a>
+  <nav class="main"><a href="/rates/">Rates</a><a href="/compare/">Compare</a><a href="/surcharges/">Fees</a><a href="/calculator/">Calculator</a><a href="/ship/" class='on'>Items</a></nav>
+</div></header>
+<main><div class="wrap">
+
+<div class="crumb"><a href="/">Home</a> / <a href="/ship/">By item</a> / Food &amp; perishables</div>
+<h1>Cheapest way to ship food and perishables</h1>
+<p class="lede">Perishables add handling fees on top of postage, and the ice or gel packs count toward billable weight.</p>
+<div class="stamp"><span>Effective <b>September 14, 2026</b></span><span>·</span><span>Source: <b>USPS official price file</b></span><span>·</span><span>Published list rate</span></div>
+<div class="caveat"><b>We don't know your package.</b> There is no such thing as "the average
+cost to ship food and perishables" — it depends on weight, box size and distance. What follows is the
+real published price at each weight, so you can pick your own row instead of trusting an
+average that was invented by someone else.</div>
+<h2>Price by weight, Zone 5</h2>
+<p class="note">Zone 5 is a mid-distance shipment. Use the
+<a href="/calculator/">calculator</a> for your actual zone.</p>
+<div class="scroll"><table><thead><tr><th>Weight</th><th>Ground Advantage</th>
+<th>Priority Mail</th></tr></thead><tbody><tr><td>1 lb</td><td class="num best">$11.70</td><td class="num">$14.05</td></tr><tr><td>2 lb</td><td class="num best">$14.85</td><td class="num">$17.85</td></tr><tr><td>3 lb</td><td class="num best">$15.70</td><td class="num">$19.05</td></tr><tr><td>5 lb</td><td class="num best">$18.85</td><td class="num">$24.20</td></tr><tr><td>10 lb</td><td class="num best">$24.25</td><td class="num">$30.75</td></tr><tr><td>20 lb</td><td class="num best">$37.90</td><td class="num">$51.25</td></tr><tr><td>30 lb</td><td class="num best">$76.30</td><td class="num">$93.30</td></tr></tbody></table></div>
+<h2>What actually drives the price</h2>
+<ul class="tight">
+<li><b>Dimensional weight.</b> USPS bills the greater of actual weight and
+L×W×H÷166. A light but bulky box is priced as if it were heavy.</li>
+<li><b>Zone.</b> The same package can cost twice as much crossing the country as it does
+going one state over.</li>
+<li><b>Size surcharges.</b> Over 22 inches adds a nonstandard length fee; over 2 cubic
+feet adds a volume fee. <a href="/surcharges/">Full list</a>.</li>
+</ul>
+<h2>Options worth knowing</h2>
+<ul class="tight">
+<li><a href="/rates/ground-advantage/">Ground Advantage</a> — cheapest for most parcels,
+2–5 business days.</li>
+<li><a href="/rates/priority-mail/">Priority Mail</a> — 1–3 days, and
+<a href="/rates/flat-rate/">Flat Rate</a> ignores weight entirely if it fits.</li>
+<li><a href="/rates/priority-mail-express/">Priority Mail Express</a> — when it has to
+arrive tomorrow.</li>
+</ul>
+<p class="note">All figures are USPS <b>published list rates</b>. Commercial or negotiated prices can be lower. Nothing here is an estimate.</p>
+
+</div></main>
+<footer class="site"><div class="wrap">
+  <span>ParcelRate — shipping-rates. Data from official USPS price files, effective September 14, 2026.</span>
+  <span class="foot-links">
+    <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
+  </span>
+</div></footer>
+</body>
+</html>

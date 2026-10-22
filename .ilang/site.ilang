@@ -1,0 +1,62 @@
+ILANG
+[TYPE:config][PROJECT:parcelrate][LANG:en]
+
+::STATE{@SITE, brand:ParcelRate, niche:shipping-rates, domain:parcelrate.example.com, locale:en-US, currency:USD, base_url:https://parcelrate.example.com}
+
+::MODULE{SITE|title:站点级设置 改这里整站跟着变}
+  locale: en-US
+  currency: USD
+  base_url: https://parcelrate.example.com
+  canonical_relative: true
+  title_template: "{brand} — {niche}, verified {month}"
+  tagline: USPS, FedEx and UPS shipping rates from official published tariffs. Every figure carries its effective date.
+  update_cron: "23 */12 * * *"
+  refresh_human: 12 hours
+  stale_after_days: 7
+  contact_email: hello@example.com
+
+::MODULE{CARRIERS|title:抓哪几家 这里改了站就变}
+  usps | USPS | https://www.usps.com | https://www.usps.com/business/prices.htm | csv
+  fedex | FedEx | https://www.fedex.com | https://www.fedex.com/en-us/shipping/rate-changes.html | pdf
+  ups | UPS | https://www.ups.com | https://www.ups.com/us/en/support/shipping-support/shipping-costs-rates.page | pdf
+
+::MODULE{USPS_FILES|title:USPS 官方价目表文件 全部为 2026 期}
+  ground-advantage-retail | s-ground-advantage-retail.csv | Ground Advantage | retail
+  ground-advantage-com | s-ground-advantage-com.csv | Ground Advantage | commercial
+  priority-mail-retail | s-pm-retail.csv | Priority Mail | retail
+  priority-mail-com | s-pm-com.csv | Priority Mail | commercial
+  priority-mail-express-retail | s-pme-retail.csv | Priority Mail Express | retail
+  priority-mail-express-com | s-pme-com.csv | Priority Mail Express | commercial
+  media-mail | m-media-mail-retail-and-comm.csv | Media Mail | retail
+  first-class-letters | m-fcm-comm-letters.csv | First-Class Mail Letters | commercial
+  first-class-flats | m-fcm-comm-flats.csv | First-Class Mail Flats | commercial
+  library-mail | m-library-mail-retail-comm.csv | Library Mail | retail
+  bound-printed-matter | m-bpm-parcels.csv | Bound Printed Matter | retail
+  extra-services | dom-extra-services.csv | Domestic Extra Services | both
+  other-services | dom-other-services.csv | Domestic Other Services | both
+
+::MODULE{SOURCES|title:非 CSV 数据源}
+  usps-zone-api | https://postcalc.usps.com/DomesticZoneChart/GetZone?Origin={origin}&Destination={destination}&ShippingDate={date}
+  fedex-rates-pdf | https://www.fedex.com/content/dam/fedex/us-united-states/services/FedEx_Standard_List_Rates_2026.pdf
+  usps-prices-index | https://www.usps.com/business/prices.htm
+
+::MODULE{FIELDS|title:每个价格点提取什么}
+  carrier service weight_lb zone price currency effective_date source_url
+
+::RULE{抓不到 price⇒这条不写 price 字段 也不写进结构化数据 不许拿估的填}
+::RULE{抓不到 effective_date⇒标 unknown 并在页面上显示 不许省略这个字段}
+::RULE{carrier 版本不同期⇒不做跨承运商同表比较 宁可只展示一家 也不混年份}
+::RULE{list rate 必须标注⇒页面上写明 published list rate, not negotiated rate 因为大客户折扣可达 30-70%}
+::RULE{调价⇒只记官方公布的生效日 不按抓取时间记}
+::RULE{去重键⇒carrier 加 service 加 weight_lb 加 zone 加 price_basis}
+::RULE{数据源变更⇒旧快照保留 不覆盖 不重算历史}
+::BOUNDARY{never:编运费 编折扣 编佣金 混用不同年份的费率|scope:permanent}
+
+::MODULE{SEO|title:页面策略}
+  noindex_below_rows: 3
+  sitemap_pin_effective_date: true
+  money_pages: compare, rates, ship
+  title_rate: {service} rates {year} — full official price table
+  title_compare: {a} vs {b} — which is cheaper, with real rates
+  title_item: Cheapest way to ship {item} — actual rates, not averages
+  avoid: how-much-cost (AI-answerable), brand-plus-price (carrier-owned SERP)

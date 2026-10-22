@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flat Rate vs Regular Priority Mail — Exact Break-Even Weight by Zone | ParcelRate</title>
+<meta name="description" content="The exact weight where a USPS Flat Rate box becomes cheaper than weight-based Priority Mail, calculated for every flat rate option and every zone.">
+<link rel="canonical" href="https://parcelrate.example.com/compare/flat-rate-vs-regular/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1b5fd9">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Flat Rate vs Regular Priority Mail — Exact Break-Even Weight by Zone | ParcelRate">
+<meta property="og:description" content="The exact weight where a USPS Flat Rate box becomes cheaper than weight-based Priority Mail, calculated for every flat rate option and every zone.">
+<meta property="og:url" content="https://parcelrate.example.com/compare/flat-rate-vs-regular/">
+<meta name="twitter:card" content="summary">
+<style>
+:root{
+  --ink:#16181d; --muted:#5d6470; --line:#e3e6ec; --bg:#ffffff; --soft:#f6f7f9;
+  --accent:#1b5fd9; --accent-soft:#eef3fd; --good:#0f7b45; --warn:#8a5a00;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+header.site{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:10}
+header.site .wrap{display:flex;align-items:center;gap:22px;height:60px}
+.brand{font-weight:700;font-size:17px;letter-spacing:-.01em;color:var(--ink)}
+.brand span{color:var(--accent)}
+nav.main{display:flex;gap:18px;font-size:14.5px;margin-left:auto;flex-wrap:nowrap;overflow:hidden}
+nav.main a{color:var(--muted);white-space:nowrap}
+nav.main a:hover{color:var(--ink)}
+nav.main a.on{color:var(--ink);font-weight:600}
+main{padding:38px 0 60px}
+h1{font-size:31px;line-height:1.2;letter-spacing:-.022em;margin:0 0 12px}
+h2{font-size:20px;letter-spacing:-.012em;margin:38px 0 12px;padding-top:6px}
+h3{font-size:16.5px;margin:26px 0 8px}
+p{margin:0 0 14px}
+.lede{font-size:17.5px;color:var(--muted);margin-bottom:24px;max-width:70ch}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:14px}
+.crumb a{color:var(--muted)}
+.stamp{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;
+  color:var(--muted);background:var(--soft);border:1px solid var(--line);
+  border-radius:6px;padding:7px 11px;margin:0 0 22px}
+.stamp b{color:var(--ink);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0 6px;
+  font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--soft);font-weight:600;font-size:12.5px;letter-spacing:.02em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+tbody tr:hover{background:#fbfcfd}
+td.num{font-family:var(--mono);font-size:13.5px}
+.best{color:var(--good);font-weight:700}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);
+  border-radius:8px;margin:16px 0}
+.scroll table{margin:0}
+.scroll thead th{position:sticky;top:0}
+.note{font-size:13.5px;color:var(--muted);margin:8px 0 0}
+.caveat{border-left:3px solid var(--warn);background:#fdf9ef;padding:12px 16px;
+  font-size:14px;margin:20px 0;border-radius:0 6px 6px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:22px 0}
+.card{border:1px solid var(--line);border-radius:9px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+.card .big{font-family:var(--mono);font-size:21px;color:var(--ink);font-weight:600;
+  display:block;margin:4px 0 6px}
+ul.tight{margin:0 0 16px;padding-left:20px}
+ul.tight li{margin-bottom:7px}
+footer.site{border-top:1px solid var(--line);padding:26px 0 40px;font-size:13px;
+  color:var(--muted);background:var(--soft)}
+footer.site .wrap{display:flex;gap:16px;flex-wrap:wrap}
+footer.site a{color:var(--muted)}
+.foot-links{margin-left:auto;display:flex;gap:16px;flex-wrap:wrap}
+code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5px;
+  border-radius:4px;border:1px solid var(--line)}
+.cta{border:1px solid var(--line);border-radius:9px;padding:18px 20px;margin:26px 0;
+  background:var(--soft)}
+.cta h3{margin:0 0 8px}
+@media(max-width:700px){
+  h1{font-size:25px}.lede{font-size:16px}
+  /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */
+  nav.main{gap:9px}
+  nav.main a{font-size:13px}
+  .wrap{padding:0 16px}
+  th,td{padding:7px 8px;font-size:13px}
+}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://parcelrate.example.com/"}, {"@type": "ListItem", "position": 2, "name": "Compare", "item": "https://parcelrate.example.com/compare/"}, {"@type": "ListItem", "position": 3, "name": "Flat Rate vs regular", "item": "https://parcelrate.example.com/compare/flat-rate-vs-regular/"}]}</script>
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="brand" href="/">Parcel<span>Rate</span></a>
+  <nav class="main"><a href="/rates/">Rates</a><a href="/compare/" class='on'>Compare</a><a href="/surcharges/">Fees</a><a href="/calculator/">Calculator</a><a href="/ship/">Items</a></nav>
+</div></header>
+<main><div class="wrap">
+
+<div class="crumb"><a href="/">Home</a> / <a href="/compare/">Compare</a> / Flat Rate vs regular</div>
+<h1>Flat Rate vs regular pricing — the break-even weight</h1>
+<p class="lede">A Flat Rate box costs the same no matter how far it goes. Regular Priority
+Mail charges by weight and zone. This table shows the exact weight at which regular
+pricing becomes the more expensive of the two.</p>
+<div class="stamp"><span>Effective <b>September 14, 2026</b></span><span>·</span><span>Source: <b>USPS official price file</b></span><span>·</span><span>Published list rate</span></div>
+<h2>How to read this</h2>
+<p>Each cell is the weight at which <b>weight-based Priority Mail first costs as much as
+or more than</b> that Flat Rate option. Below that weight, regular pricing is cheaper.
+Above it, the Flat Rate box wins.</p>
+<div class="scroll"><table><thead><tr><th>Flat Rate option</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead>
+<tbody><tr><td>Flat Rate Envelopes<br><span class="note">$13.90</span></td><td class="num">4 lb</td><td class="num">4 lb</td><td class="num">2 lb</td><td class="num">2 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td></tr><tr><td>Legal Flat Rate Envelope<br><span class="note">$14.25</span></td><td class="num">4 lb</td><td class="num">4 lb</td><td class="num">3 lb</td><td class="num">2 lb</td><td class="num">2 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td></tr><tr><td>Padded Flat Rate Envelope<br><span class="note">$15.00</span></td><td class="num">5 lb</td><td class="num">5 lb</td><td class="num">4 lb</td><td class="num">3 lb</td><td class="num">2 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td></tr><tr><td>Small Flat Rate Box<br><span class="note">$14.65</span></td><td class="num">5 lb</td><td class="num">4 lb</td><td class="num">4 lb</td><td class="num">2 lb</td><td class="num">2 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td><td class="num">1 lb</td></tr><tr><td>Medium Flat Rate Boxes<br><span class="note">$25.80</span></td><td class="num">18 lb</td><td class="num">18 lb</td><td class="num">17 lb</td><td class="num">14 lb</td><td class="num">7 lb</td><td class="num">4 lb</td><td class="num">4 lb</td><td class="num">3 lb</td><td class="num">1 lb</td></tr><tr><td>Large Flat Rate Boxes<br><span class="note">$36.10</span></td><td class="num">24 lb</td><td class="num">23 lb</td><td class="num">22 lb</td><td class="num">21 lb</td><td class="num">13 lb</td><td class="num">8 lb</td><td class="num">6 lb</td><td class="num">5 lb</td><td class="num">2 lb</td></tr><tr><td>APO/FPO/DPO Large Flat Rate Box<br><span class="note">$34.65</span></td><td class="num">23 lb</td><td class="num">22 lb</td><td class="num">21 lb</td><td class="num">21 lb</td><td class="num">12 lb</td><td class="num">8 lb</td><td class="num">5 lb</td><td class="num">5 lb</td><td class="num">1 lb</td></tr></tbody></table></div>
+<p class="note">"never" means regular pricing does not reach that flat rate at any
+published weight tier up to 70 lb — the flat rate is always the more expensive option.</p>
+<h2>What this actually means</h2>
+<ul class="tight">
+<li><b>Short zones favour regular pricing.</b> On Zone 1–2 you need several pounds before a
+Small Flat Rate box pays for itself, because local weight-based rates are already cheap.</li>
+<li><b>Long zones favour Flat Rate almost immediately.</b> On Zone 8 the 1 lb regular rate
+is already above the Small Flat Rate price, so Flat Rate wins from the first pound.</li>
+<li><b>Heavy and far is where Flat Rate shines.</b> That is the combination USPS prices
+most aggressively on the weight-based side.</li>
+</ul>
+<div class="caveat"><b>Size still matters.</b> Flat Rate boxes have fixed dimensions. If your
+item doesn't fit, the comparison is moot. And every Flat Rate option caps at 70 lb.</div>
+<p class="note">All figures are USPS <b>published list rates</b>. Commercial or negotiated prices can be lower. Nothing here is an estimate.</p>
+
+</div></main>
+<footer class="site"><div class="wrap">
+  <span>ParcelRate — shipping-rates. Data from official USPS price files, effective September 14, 2026.</span>
+  <span class="foot-links">
+    <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
+  </span>
+</div></footer>
+</body>
+</html>
