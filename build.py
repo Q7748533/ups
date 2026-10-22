@@ -29,6 +29,23 @@ BRAND = S.get("brand", "ParcelRate")
 NICHE = S.get("niche", "shipping-rates")
 BASE = S.get("base_url", "").rstrip("/")
 CONTACT = S.get("contact_email", "")
+# 测试部署期必须挡住收录：临时域名一旦被索引，换正式域名就是一次迁移，
+# 而不是一次上线。绑域名后把 .ilang 里的 indexable 改成 true。
+_raw_indexable = str(S.get("indexable", "true")).strip().lower()
+if _raw_indexable not in ("true", "false", "1", "0", "yes", "no"):
+    # 配置被污染时宁可停下，也不要猜。曾经因为行内注释没被剥掉，
+    # 这个值变成 "false   # 注释" 后不报错地走了默认分支。
+    raise SystemExit(f"config error: indexable={_raw_indexable!r} 无法识别")
+INDEXABLE = _raw_indexable in ("1", "true", "yes")
+if BASE and not BASE.startswith("http"):
+    raise SystemExit(f"config error: base_url 不是完整 URL: {BASE!r}")
+# 上线前必须把占位域名换掉：带着 example.com 的 sitemap 一旦被收录，
+# 等于把整个站点的规范地址声明成一个不存在的域名。
+if INDEXABLE and "example.com" in BASE:
+    raise SystemExit(f"config error: indexable=true 但 base_url 仍是占位 ({BASE})")
+# 相对 canonical 让同一份构建在任何主机上都自洽：测试主机的分享链接每次
+# 发布都会变，追着它改 base_url 是死循环。绑正式域名后关掉这个开关即可。
+CANON_REL = str(S.get("canonical_relative", "false")).strip().lower() in ("1", "true", "yes")
 MIN_ROWS = int(SEO.get("noindex_below_rows", "3") or 3)
 
 TODAY = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -76,7 +93,18 @@ def pretty_date(iso: str | None) -> str:
 
 
 def url_of(path: str) -> str:
+    """绝对地址。sitemap 和 og:url 必须用它（这两个地方相对路径无效）。"""
     return f"{BASE}{path}" if BASE else path
+
+
+def link_of(path: str) -> str:
+    """页面里引用的地址：相对模式给路径，绝对模式给完整 URL。
+
+    canonical 与 JSON-LD 的 item 都走这里，保证同一页上的规范地址口径一致。
+    测试期 base_url 还是占位域名时，宁可给相对路径，也不要在结构化数据里
+    写一个解析不出来的域名。
+    """
+    return path if CANON_REL else url_of(path)
 
 
 # ------------------------------------------------------------------- data access
@@ -236,9 +264,9 @@ def _crumb_jsonld(path: str, body: str) -> dict | None:
     for i, part in enumerate(re.split(r"\s+/\s+", m.group(1).strip()), start=1):
         link = re.match(r'<a href="([^"]+)">(.*?)</a>', part.strip())
         if link:
-            name, url = link.group(2), url_of(link.group(1))
+            name, url = link.group(2), link_of(link.group(1))
         else:
-            name, url = re.sub(r"<[^>]+>", "", part), url_of(path)
+            name, url = re.sub(r"<[^>]+>", "", part), link_of(path)
         name = unescape(name).strip()
         if not name:
             continue
@@ -269,13 +297,18 @@ def ld_block(*blocks) -> str:
 
 def layout(path: str, title: str, desc: str, body: str, jsonld: dict | None = None,
            noindex: bool = False) -> str:
-    canonical = url_of(path)
+    canonical = link_of(path)
     nav_html = "".join(
         f'<a href="{href}"{" class=\'on\'" if path.startswith(href) else ""}>{label}</a>'
         for href, label in NAV
     )
     robots = '<meta name="robots" content="noindex,follow">' if noindex else ""
     ld = ld_block(jsonld, _crumb_jsonld(path, body))
+    # og:url 必须是绝对地址，相对路径在这里是无效标签。测试期 base_url 还是
+    # 占位域名时宁可不输出这一条，也不要写一个指向不存在域名的地址。
+    og_url = ""
+    if BASE and "example.com" not in BASE:
+        og_url = f'<meta property="og:url" content="{esc(url_of(path))}">'
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -290,7 +323,7 @@ def layout(path: str, title: str, desc: str, body: str, jsonld: dict | None = No
 <meta property="og:type" content="website">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
-<meta property="og:url" content="{esc(canonical)}">
+{og_url}
 <meta name="twitter:card" content="summary">
 <style>{CSS}</style>
 {ld}
@@ -474,7 +507,7 @@ laptops, food, furniture, overnight.</li>
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": BRAND,
-        "url": url_of("/"),
+        "url": link_of("/"),
         "description": "USPS shipping rates from official price files, with effective dates.",
     }
     write_page(
@@ -1300,9 +1333,13 @@ def write_favicon() -> None:
 
 
 def write_robots() -> None:
-    body = "User-agent: *\nAllow: /\n"
-    if BASE:
-        body += f"\nSitemap: {BASE}/sitemap.xml\n"
+    if not INDEXABLE:
+        # 全站挡住，且不公布 sitemap —— 声明了却不允许抓是自相矛盾的信号
+        body = "User-agent: *\nDisallow: /\n"
+    else:
+        body = "User-agent: *\nAllow: /\n"
+        if BASE:
+            body += f"\nSitemap: {BASE}/sitemap.xml\n"
     with open(os.path.join(SITE, "robots.txt"), "w", encoding="utf-8") as fh:
         fh.write(body)
 
@@ -1388,6 +1425,13 @@ def main() -> int:
     print(f"  services: {len(SERVICES)}  extra-service groups: {len(EXTRA)}")
     print(f"  sitemap entries: {pages}")
     print(f"  output: {SITE}")
+    if not INDEXABLE:
+        print("  REMINDER: indexable=false — robots.txt 全站 Disallow，Google 不会收录。")
+        print("            绑正式域名后把 .ilang/site.ilang 的 indexable 改成 true。")
+    if "example.com" in BASE:
+        print(f"  REMINDER: base_url 仍是占位 ({BASE})。")
+    if "example.com" in CONTACT:
+        print(f"  REMINDER: contact_email 仍是占位 ({CONTACT}) — 会印在 privacy 页上。")
     return 0
 
 

@@ -22,6 +22,22 @@ def _slug(value: str) -> str:
     return s.strip("-") or "item"
 
 
+def _strip_comment(line: str) -> str:
+    """剥掉行内 `#` 注释。
+
+    `#` 位于行首或前面是空白才算注释起点——这样 URL 片段（`...page#section`）
+    和十六进制色值（`#1b5fd9`）前面没有空白，不会被误伤。
+
+    必须在切分字段**之前**剥：注释里常有逗号，先切会把一句话切成好几个
+    假字段，值就被污染成 `https://example.com   # 临时地址` 这种半截东西，
+    而且不报错。这个坑真实踩过一次。
+    """
+    for i, ch in enumerate(line):
+        if ch == "#" and (i == 0 or line[i - 1] in " \t"):
+            return line[:i]
+    return line
+
+
 def _split_fields(body: str) -> dict:
     """Parse `key: value` pairs separated by commas / newlines."""
     out = {}
@@ -45,7 +61,7 @@ def load(path: str = DEFAULT_PATH) -> dict:
     current = None
 
     for raw in lines:
-        line = raw.rstrip()
+        line = _strip_comment(raw).rstrip()
         if not line.strip():
             continue
 

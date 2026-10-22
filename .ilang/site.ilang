@@ -6,14 +6,16 @@ ILANG
 ::MODULE{SITE|title:站点级设置 改这里整站跟着变}
   locale: en-US
   currency: USD
-  base_url: https://parcelrate.example.com
-  canonical_relative: true
+  base_url: https://parcelrate.example.com   # 绑正式域名后改这里（唯一需要改的地方）
+  canonical_relative: true   # 相对 canonical：同一份构建在任何主机都自洽；绑域名后可关
   title_template: "{brand} — {niche}, verified {month}"
   tagline: USPS, FedEx and UPS shipping rates from official published tariffs. Every figure carries its effective date.
   update_cron: "23 */12 * * *"
   refresh_human: 12 hours
   stale_after_days: 7
   contact_email: hello@example.com
+  indexable: false        # 测试期 false：robots.txt 全站 Disallow，避免临时域名被收录
+                          # 绑正式域名后改成 true，一次构建即放开
 
 ::MODULE{CARRIERS|title:抓哪几家 这里改了站就变}
   usps | USPS | https://www.usps.com | https://www.usps.com/business/prices.htm | csv
