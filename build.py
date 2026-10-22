@@ -43,6 +43,11 @@ if BASE and not BASE.startswith("http"):
 # 等于把整个站点的规范地址声明成一个不存在的域名。
 if INDEXABLE and "example.com" in BASE:
     raise SystemExit(f"config error: indexable=true 但 base_url 仍是占位 ({BASE})")
+# workers.dev 是共享子域，不是自有域名。在这里放开索引，将来绑正式域名
+# 就是一次站点迁移而不是一次上线，所以只警告不拦截（有人确实长期用它）。
+if INDEXABLE and "workers.dev" in BASE:
+    print(f"  WARNING: indexable=true 但 base_url 是 workers.dev ({BASE})。")
+    print("           绑正式域名前建议保持 false，否则换域名要处理重复内容。")
 # 相对 canonical 让同一份构建在任何主机上都自洽：测试主机的分享链接每次
 # 发布都会变，追着它改 base_url 是死循环。绑正式域名后关掉这个开关即可。
 CANON_REL = str(S.get("canonical_relative", "false")).strip().lower() in ("1", "true", "yes")

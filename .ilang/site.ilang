@@ -1,12 +1,12 @@
 ILANG
 [TYPE:config][PROJECT:parcelrate][LANG:en]
 
-::STATE{@SITE, brand:ParcelRate, niche:shipping-rates, domain:parcelrate.example.com, locale:en-US, currency:USD, base_url:https://parcelrate.example.com}
+::STATE{@SITE, brand:ParcelRate, niche:shipping-rates, domain:parcelrate.example.com, locale:en-US, currency:USD, base_url:https://parcelrate.frankfraaa.workers.dev}
 
 ::MODULE{SITE|title:站点级设置 改这里整站跟着变}
   locale: en-US
   currency: USD
-  base_url: https://parcelrate.example.com   # 绑正式域名后改这里（唯一需要改的地方）
+  base_url: https://parcelrate.frankfraaa.workers.dev   # 绑正式域名后改这一行
   canonical_relative: true   # 相对 canonical：同一份构建在任何主机都自洽；绑域名后可关
   title_template: "{brand} — {niche}, verified {month}"
   tagline: USPS, FedEx and UPS shipping rates from official published tariffs. Every figure carries its effective date.
@@ -14,7 +14,7 @@ ILANG
   refresh_human: 12 hours
   stale_after_days: 7
   contact_email: hello@example.com
-  indexable: false        # 测试期 false：robots.txt 全站 Disallow，避免临时域名被收录
+  indexable: false        # 测试期 false：robots.txt 全站 Disallow，避免 workers.dev 被收录
                           # 绑正式域名后改成 true，一次构建即放开
 
 ::MODULE{CARRIERS|title:抓哪几家 这里改了站就变}

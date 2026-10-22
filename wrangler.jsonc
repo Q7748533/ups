@@ -1,0 +1,19 @@
+// Cloudflare Worker 配置：把 site/ 当静态资源直接托管。
+//
+// not_found_handling: "404-page" 让不存在的路径返回我们自己的 site/404.html
+// 并带真实 404 状态码，而不是 Cloudflare 的空响应。临时测试主机不支持这条，
+// 上了 Cloudflare 才生效。
+//
+// html_handling: "auto-trailing-slash" 让 /rates/ground-advantage 自动落到
+// /rates/ground-advantage/index.html，两种写法都能打开，不会 404。
+//
+// 部署必须在本目录执行：npx wrangler deploy
+{
+  "name": "parcelrate",
+  "compatibility_date": "2026-10-23",
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+}
