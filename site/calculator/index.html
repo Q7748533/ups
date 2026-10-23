@@ -95,6 +95,20 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 .zf-out b{color:var(--accent)}
 th.zone-hl,td.zone-hl{background:#FAEEDA !important}
 th.zone-hl{color:#854F0B;font-weight:600}
+/* 计算器里的 Zone 是计算结果，不是输入项：用一行只读的结论代替下拉框 */
+.zres{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-top:16px;
+  padding:11px 13px;border:1px solid var(--line);border-radius:7px;background:var(--soft)}
+.zres-k{font-size:13px;color:var(--muted)}
+.zres-n{font-size:20px;font-weight:700;color:var(--accent);line-height:1;
+  font-variant-numeric:tabular-nums}
+.zres-src{font-size:12.5px;color:var(--muted);flex:1;min-width:140px;line-height:1.45}
+.zres-src b{color:var(--ink);font-weight:600}
+.zres-edit{border:0;background:none;padding:0;font:inherit;font-size:12.5px;
+  color:var(--muted);text-decoration:underline;text-underline-offset:2px;
+  cursor:pointer;align-self:center}
+.zres-edit:hover{color:var(--accent)}
+#z{width:100%;margin-top:9px;padding:9px 11px;border:1px solid var(--line);
+  border-radius:6px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
 @media(max-width:700px){
   h1{font-size:25px}.lede{font-size:16px}
   /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */
@@ -116,30 +130,36 @@ th.zone-hl{color:#854F0B;font-weight:600}
 
 <div class="crumb"><a href="/">Home</a> / Calculator</div>
 <h1>USPS rate calculator</h1>
-<p class="lede">Enter a weight and a zone. Get the exact published price for every USPS
+<p class="lede">Enter a weight and two ZIP codes. Get the exact published price for every USPS
 service at once — no rounding, no "from $X".</p>
 <div class="stamp"><span>Effective <b>October 4, 2026</b></span><span>·</span><span>Valid through <b>January 17, 2027</b></span><span>·</span><span>Source: <b>USPS official price file</b></span><span>·</span><span>Published list rate</span></div>
 <div class="card" style="max-width:520px">
   <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:5px">Weight (lb)</label>
   <input id="w" type="number" min="0.1" step="0.1" value="2" inputmode="decimal"
-    style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:15px;margin-bottom:14px">
-  <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:5px">Zone</label>
-  <select id="z" style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:15px">
-    <option value="1">Zone 1</option><option value="2">Zone 2</option><option value="3">Zone 3</option><option value="4">Zone 4</option><option value="5" selected>Zone 5</option><option value="6">Zone 6</option><option value="7">Zone 7</option><option value="8">Zone 8</option><option value="9">Zone 9</option>
-  </select>
+    style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:15px">
   <div style="border-top:1px solid var(--line);margin:16px 0 0;padding-top:14px">
     <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:5px">
-      Don't know your zone? Enter both ZIP codes and we'll set it</label>
+      Shipping from and to</label>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <input id="zf-from" maxlength="5" inputmode="numeric" placeholder="From ZIP" autocomplete="postal-code"
         style="flex:1;min-width:108px;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:15px">
       <input id="zf-to" maxlength="5" inputmode="numeric" placeholder="To ZIP" autocomplete="postal-code"
         style="flex:1;min-width:108px;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:15px">
       <button id="zf-go" type="button"
-        style="padding:9px 16px;border:1px solid var(--ink);border-radius:6px;background:var(--ink);color:#fff;font:inherit;font-size:14px;cursor:pointer">Find</button>
+        style="padding:9px 16px;border:1px solid var(--ink);border-radius:6px;background:var(--ink);color:#fff;font:inherit;font-size:14px;cursor:pointer">Find zone</button>
     </div>
-    <p class="note" id="zf-out" role="status" aria-live="polite"></p>
   </div>
+  <div class="zres">
+    <span class="zres-k">Zone</span>
+    <span class="zres-n" id="z-num">5</span>
+    <span class="zres-src" id="z-src">Default. Enter both ZIP codes and USPS's zone for that pair
+      replaces it.</span>
+    <button type="button" class="zres-edit" id="z-edit">change</button>
+  </div>
+  <select id="z" style="display:none">
+    <option value="1">Zone 1</option><option value="2">Zone 2</option><option value="3">Zone 3</option><option value="4">Zone 4</option><option value="5" selected>Zone 5</option><option value="6">Zone 6</option><option value="7">Zone 7</option><option value="8">Zone 8</option><option value="9">Zone 9</option>
+  </select>
+  <p class="note" id="zf-out" role="status" aria-live="polite"></p>
 </div>
 <h2>Result</h2>
 <div id="out"><div class="scroll"><table><thead><tr><th>Service</th><th>Priced at</th><th>Price</th></tr></thead><tbody><tr><td>Ground Advantage</td><td>2 lb</td><td class="num">$14.85</td></tr><tr><td>Priority Mail</td><td>2 lb</td><td class="num">$17.85</td></tr><tr><td>Priority Mail Express</td><td>2 lb</td><td class="num">$62.20</td></tr><tr><td>Media Mail</td><td>2 lb</td><td class="num best">$5.13</td></tr></tbody></table></div><p class="note">Cheapest published rate for this weight and zone: <b>Media Mail at $5.13</b>.</p></div>
@@ -270,10 +290,41 @@ function calc(){
   if(best!=null){html+='<p class="note">Cheapest published rate for this weight and zone: <b>'+bestName+' at '+fmt(best)+'</b>.</p>';}
   out.innerHTML=html;
 }
+var zSel=document.getElementById("z"), zNum=document.getElementById("z-num"),
+    zSrc=document.getElementById("z-src"), zEdit=document.getElementById("z-edit"),
+    zOut=document.getElementById("zf-out");
+// Zone 是「两个 ZIP 算出来的结果」，不是「用户该填的输入项」。所以它平时
+// 显示成一行结论，下拉框藏起来；只有用户主动点 change 才展开手动选。
+// 之前它一直是个下拉框：填完 ZIP 点 Find，值确实变了，但看起来和用户自己
+// 选的一模一样，没人知道查找到底生效了没有。
+function showZone(v,src){
+  zSel.value=String(v);
+  zNum.textContent=String(v);
+  zSrc.innerHTML=src;
+  zSel.style.display="none";
+  zEdit.textContent="change";
+}
+zEdit.addEventListener("click",function(){
+  if(zSel.style.display==="block"){
+    zSel.style.display="none"; zEdit.textContent="change"; return;
+  }
+  zSel.style.display="block";
+  zSel.focus();
+  zEdit.textContent="done";
+  zSrc.textContent="Pick a zone directly if you already know it.";
+  zOut.textContent="";
+});
 document.getElementById("w").addEventListener("input",calc);
 // 手动改 Zone 就等于放弃了刚才那对 ZIP 的服务级例外，必须清掉，
 // 否则页面上会留着上一次目的地算出来的价。
-document.getElementById("z").addEventListener("change",function(){ZOVR={};calc();});
+zSel.addEventListener("change",function(){
+  ZOVR={};
+  zNum.textContent=zSel.value;
+  zSrc.textContent="Picked manually.";
+  zSel.style.display="none";
+  zEdit.textContent="change";
+  calc();
+});
 calc();
 
 // 从两个 ZIP 反推 Zone，直接填进上面的下拉框。
@@ -292,19 +343,22 @@ calc();
       btn.disabled=false;
       if(!r||r.base===null){o.textContent="No zone found for "+a+" to "+b+". Check the ZIP codes.";return;}
       ZOVR=r.byService||{};
-      document.getElementById("z").value=String(r.base);
-      calc();
       var ovr=[];
       for(var k in ZOVR){if(ZOVR[k]!=null)ovr.push(k+" at Zone "+ZOVR[k]);}
       if(ovr.length){
+        showZone(r.base,"<b>APO/FPO address.</b> USPS uses Zone "+r.base
+          +" here, except "+ovr.join(", ")+".");
         o.innerHTML="Zone <b>"+r.base+"</b> set. This is an APO/FPO address — "
-          +ovr.join(", ")+". Prices below already account for that.";
+          +ovr.join(", ")+". The prices below already account for that.";
       }else{
-        o.innerHTML="Zone <b>"+r.base+"</b> set — prices updated.";
+        showZone(r.base,"From <b>"+a+"</b> to <b>"+b+"</b> — the zone USPS assigns "
+          +"to this ZIP pair.");
+        o.innerHTML="Zone <b>"+r.base+"</b> — prices updated.";
       }
+      calc();
     }).catch(function(){
       btn.disabled=false;
-      o.textContent="Zone lookup is unavailable right now. Pick your zone above.";
+      o.textContent="Zone lookup is unavailable right now. Use change to pick your zone directly.";
     });
   }
   btn.addEventListener("click",run);

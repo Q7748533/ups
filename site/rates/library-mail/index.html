@@ -95,6 +95,20 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 .zf-out b{color:var(--accent)}
 th.zone-hl,td.zone-hl{background:#FAEEDA !important}
 th.zone-hl{color:#854F0B;font-weight:600}
+/* 计算器里的 Zone 是计算结果，不是输入项：用一行只读的结论代替下拉框 */
+.zres{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-top:16px;
+  padding:11px 13px;border:1px solid var(--line);border-radius:7px;background:var(--soft)}
+.zres-k{font-size:13px;color:var(--muted)}
+.zres-n{font-size:20px;font-weight:700;color:var(--accent);line-height:1;
+  font-variant-numeric:tabular-nums}
+.zres-src{font-size:12.5px;color:var(--muted);flex:1;min-width:140px;line-height:1.45}
+.zres-src b{color:var(--ink);font-weight:600}
+.zres-edit{border:0;background:none;padding:0;font:inherit;font-size:12.5px;
+  color:var(--muted);text-decoration:underline;text-underline-offset:2px;
+  cursor:pointer;align-self:center}
+.zres-edit:hover{color:var(--accent)}
+#z{width:100%;margin-top:9px;padding:9px 11px;border:1px solid var(--line);
+  border-radius:6px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
 @media(max-width:700px){
   h1{font-size:25px}.lede{font-size:16px}
   /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */

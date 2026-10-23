@@ -67,6 +67,13 @@ async function zoneFinder(page, from, to) {
     let price = await page.textContent("#out tbody tr:nth-child(1) td:nth-child(3)");
     ok(price.trim() === "$14.85", `计算器默认 GA 2lb z5 应为 $14.85，实际 ${price.trim()}`);
 
+    // Zone 在这里是「结果」不是「输入」：平时显示成一行结论，下拉框收起。
+    // 之前它一直是个可见的下拉框，填完 ZIP 值虽然变了，但看起来和用户自己
+    // 选的一模一样——没人能判断查找有没有生效。
+    ok((await page.textContent("#z-num")).trim() === "5", "初始 Zone 数字应为 5");
+    ok(!(await page.isVisible("#z")), "初始不应显示 Zone 下拉框");
+    ok(/default/i.test(await page.textContent("#z-src")), "初始应说明这是默认值");
+
     // NY -> Chicago = Zone 5，价格不该变（默认就是 5）
     let msg = await zoneFinder(page, "10001", "60601");
     ok(/zone\s*5/i.test(msg), `10001->60601 应提示 Zone 5，实际 "${msg}"`);
@@ -78,6 +85,17 @@ async function zoneFinder(page, from, to) {
     ok((await page.inputValue("#z")) === "8", `下拉框应为 8，实际 ${await page.inputValue("#z")}`);
     price = await page.textContent("#out tbody tr:nth-child(1) td:nth-child(3)");
     ok(price.trim() === "$19.80", `Zone 8 时 GA 2lb 应为 $19.80，实际 ${price.trim()}`);
+    ok((await page.textContent("#z-num")).trim() === "8", "查到后 Zone 数字应为 8");
+    ok(!(await page.isVisible("#z")), "查到后下拉框仍应收起");
+    ok(/90001/.test(await page.textContent("#z-src")), "来源说明应写出这对 ZIP");
+
+    // change 是手动入口：展开 → 选 → 收起，且来源标成手动
+    await page.click("#z-edit");
+    ok(await page.isVisible("#z"), "点 change 后下拉框应出现");
+    await page.selectOption("#z", "3");
+    ok((await page.textContent("#z-num")).trim() === "3", "手动选 3 后数字应为 3");
+    ok(!(await page.isVisible("#z")), "手动选完后下拉框应收起");
+    ok(/manual/i.test(await page.textContent("#z-src")), "应标为手动选择");
 
     // 本地 = Zone 1
     msg = await zoneFinder(page, "60601", "60601");
@@ -124,6 +142,8 @@ async function zoneFinder(page, from, to) {
 
     // 手动改 Zone 后，上一次目的地的服务级例外必须被清掉，
     // 否则页面上会留着别的地址算出来的价。
+    // Zone 平时是收起的结果行，要先点 change 展开才能手动改。
+    await page.click("#z-edit");
     await page.selectOption("#z", "3");
     const afterManual = await page.evaluate(() =>
       [...document.querySelectorAll("#out tbody tr")].map((tr) =>

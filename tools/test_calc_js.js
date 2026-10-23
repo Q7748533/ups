@@ -24,13 +24,17 @@ if (!source) {
   process.exit(2);
 }
 
-// 最小 DOM 桩：只提供计算器真正用到的东西
+// 最小 DOM 桩：只提供计算器真正用到的东西。
+// style 和 focus 是 showZone()/点 change 展开下拉框要用的，测试不点按钮时
+// 走不到，但缺了就是缺了——桩少一个属性会伪装成「页面没 bug」。
 const els = {};
 function makeEl(id) {
   return {
     id,
     value: "",
     innerHTML: "",
+    style: {},
+    focus() {},
     addEventListener() {},
   };
 }
