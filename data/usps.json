@@ -2,7 +2,11 @@
  "meta": {
   "carrier": "USPS",
   "price_index_url": "https://www.usps.com/business/prices/2026/",
-  "fetched_at": "2026-10-22T16:28:07Z",
+  "price_change_url": "https://pe.usps.com/PriceChange/Index",
+  "price_change": "Time-Limited 2026 Price Change",
+  "effective_date": "2026-10-04",
+  "valid_through": "2027-01-17T00:00:00",
+  "fetched_at": "2026-10-23T04:12:59Z",
   "stale": false,
   "errors": []
  },
@@ -11,7 +15,10 @@
    "label": "Ground Advantage",
    "basis": "retail",
    "source_url": "https://www.usps.com/business/prices/2026/s-ground-advantage-retail.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [],
    "matrix": {
     "zone_columns": [
@@ -1251,7 +1258,10 @@
    "label": "Ground Advantage",
    "basis": "commercial",
    "source_url": "https://www.usps.com/business/prices/2026/s-ground-advantage-com.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [],
    "matrix": {
     "zone_columns": [
@@ -2503,7 +2513,10 @@
    "label": "Priority Mail",
    "basis": "retail",
    "source_url": "https://www.usps.com/business/prices/2026/s-pm-retail.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [
     {
      "name": "Flat Rate Envelopes",
@@ -3703,7 +3716,10 @@
    "label": "Priority Mail",
    "basis": "commercial",
    "source_url": "https://www.usps.com/business/prices/2026/s-pm-com.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [
     {
      "name": "Flat Rate Envelopes",
@@ -4931,7 +4947,10 @@
    "label": "Priority Mail Express",
    "basis": "retail",
    "source_url": "https://www.usps.com/business/prices/2026/s-pme-retail.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [
     {
      "name": "Flat Rate Envelope",
@@ -6136,7 +6155,10 @@
    "label": "Priority Mail Express",
    "basis": "commercial",
    "source_url": "https://www.usps.com/business/prices/2026/s-pme-com.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [
     {
      "name": "Flat Rate Envelope",
@@ -7353,7 +7375,10 @@
    "label": "Media Mail",
    "basis": "retail",
    "source_url": "https://www.usps.com/business/prices/2026/m-media-mail-retail-and-comm.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [],
    "matrix": {
     "zone_columns": [
@@ -7936,7 +7961,10 @@
    "label": "First-Class Mail Letters",
    "basis": "commercial",
    "source_url": "https://www.usps.com/business/prices/2026/m-fcm-comm-letters.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [],
    "matrix": null,
    "fees": [],
@@ -7980,7 +8008,10 @@
    "label": "First-Class Mail Flats",
    "basis": "commercial",
    "source_url": "https://www.usps.com/business/prices/2026/m-fcm-comm-flats.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [],
    "matrix": null,
    "fees": [],
@@ -8004,7 +8035,10 @@
    "label": "Library Mail",
    "basis": "retail",
    "source_url": "https://www.usps.com/business/prices/2026/m-library-mail-retail-comm.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [],
    "matrix": {
     "zone_columns": [
@@ -8587,7 +8621,10 @@
    "label": "Bound Printed Matter",
    "basis": "retail",
    "source_url": "https://www.usps.com/business/prices/2026/m-bpm-parcels.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "flat_rate": [],
    "matrix": null,
    "fees": [
@@ -8609,7 +8646,10 @@
   "extra-services": {
    "label": "Domestic Extra Services",
    "source_url": "https://www.usps.com/business/prices/2026/dom-extra-services.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "items": [
     {
      "group": "Certificate of Mailing",
@@ -8902,7 +8942,10 @@
   "other-services": {
    "label": "Domestic Other Services",
    "source_url": "https://www.usps.com/business/prices/2026/dom-other-services.csv",
-   "effective_date": "2026-09-14",
+   "effective_date": "2026-10-04",
+   "valid_through": "2027-01-17T00:00:00",
+   "price_change": "Time-Limited 2026 Price Change",
+   "file_date": "2026-09-14",
    "items": [
     {
      "group": "Address Correction",

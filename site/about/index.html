@@ -99,6 +99,7 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 </div></header>
 <main><div class="wrap">
 
+
 <div class="crumb"><a href="/">Home</a> / About</div>
 <h1>About ParcelRate</h1>
 <p class="lede">A shipping-rate reference built on published tariffs instead of guesses.</p>
@@ -119,8 +120,16 @@ than a wrong one.</li>
 </ul>
 <h2>Update cadence</h2>
 <p>Price files are re-fetched every 12 hours. Last fetch:
-2026-10-22T16:28:07Z. USPS changes prices on published effective dates — we show the date
-from the file itself, not the date we downloaded it.</p>
+2026-10-23T04:12:59Z.</p>
+<p>The effective date is not the download date, and it is not the date printed inside the
+price file either. USPS stamps its CSV files with the day the file was generated — the
+October 2026 files are stamped September 14 but took effect October 4. So we read the
+effective date from the <a href="https://pe.usps.com/PriceChange/Index" rel="nofollow">USPS
+price change notices</a> instead, and every table shows that date.</p>
+<p>Current price change: <b>Time-Limited 2026 Price Change</b>, effective
+October 4, 2026 through
+January 17, 2027. USPS has announced this as a time-limited change, so the
+figures on this site expire on that date. We will publish the next set when USPS does.</p>
 <h2>Coverage</h2>
 <p>Currently: USPS domestic services only. FedEx and UPS publish their tariffs as
 multi-hundred-page PDFs whose tables don't extract reliably; adding them is planned but
@@ -129,7 +138,7 @@ not done. We'd rather ship one carrier correctly than three badly.</p>
 
 </div></main>
 <footer class="site"><div class="wrap">
-  <span>ParcelRate — shipping-rates. Data from official USPS price files, effective September 14, 2026.</span>
+  <span>ParcelRate — shipping-rates. Data from official USPS price files, effective October 4, 2026, valid through January 17, 2027.</span>
   <span class="foot-links">
     <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
   </span>

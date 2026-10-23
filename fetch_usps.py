@@ -24,6 +24,8 @@ import siteilang
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "data")
 PRICES_BASE = "https://www.usps.com/business/prices/2026/"
+# 生效日只在这里能读到，CSV 文件头给的是文件生成日。
+PRICE_CHANGE_URL = "https://pe.usps.com/PriceChange/Index"
 UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/131.0 Safari/537.36"
@@ -192,7 +194,11 @@ def parse_price_csv(text: str) -> dict:
             "rows": matrix_rows,
         }
     return {
-        "effective_date": effective,
+        # 这是文件头的日期，官方用它标「文件生成日」，不是生效日。
+        # 2026 年就吃过这个亏：文件头写 9/14，真实生效日是 10/4，
+        # 中间三周页面上标着一个并不存在的生效日。生效日只能从
+        # Postal Explorer 的价格变更公告读，见 fetch_price_change()。
+        "file_date": effective,
         "flat_rate": flat_rate,
         "matrix": matrix,
         "fees": fees,
@@ -204,7 +210,7 @@ def parse_extra_services(text: str) -> dict:
     """Extra services use `group title` rows followed by `,sub-item,,,,price` rows."""
     rows = list(csv.reader(io.StringIO(text)))
     if not rows:
-        return {"effective_date": None, "items": []}
+        return {"file_date": None, "items": []}
 
     effective = find_date(rows[0])
     items: list[dict] = []
@@ -233,7 +239,69 @@ def parse_extra_services(text: str) -> dict:
             items.append({"group": first, "name": first, "price": price})
             continue
 
-    return {"effective_date": effective, "items": items}
+    return {"file_date": effective, "items": items}
+
+
+def fetch_price_change(today: str | None = None) -> dict:
+    """Read the currently effective price change from Postal Explorer.
+
+    官方 CSV 的文件头日期是文件生成日，不是生效日 —— 2026 年 10 月这次
+    文件头写 9/14，实际 10/4 才生效，差 20 天。生效日只出现在
+    pe.usps.com/PriceChange/Index 的公告里，两种写法：
+
+        Time-Limited 2026 Price Change
+        Starting October 4, 2026 through January 17, 2027
+
+        July 2026 Price Change
+        Effective July 12, 2026
+
+    返回生效日 <= 今天的最近一次变更。拿不到就报错，不猜日期 ——
+    一个编出来的生效日比没有生效日更危险，因为它看起来是可信的。
+    """
+    html = fetch(PRICE_CHANGE_URL)
+    text = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>", " ", html)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"\s+", " ", text)
+
+    D = r"([A-Z][a-z]+ \d{1,2}, \d{4})"
+    pat = re.compile(
+        r"(Time-Limited\s+)?(\d{4})\s+Price Change\s+"
+        r"(?:Starting\s+" + D + r"\s+through\s+" + D + r"|Effective\s+" + D + r")"
+    )
+
+    today_d = datetime.strptime(today or datetime.now().strftime("%Y-%m-%d"),
+                                "%Y-%m-%d").date()
+    candidates = []
+    for m in pat.finditer(text):
+        limit, year, start, end, effective = m.groups()
+        raw = start or effective
+        if not raw:
+            continue
+        try:
+            eff = datetime.strptime(raw, "%B %d, %Y").date()
+        except ValueError:
+            continue
+        if eff > today_d:
+            continue  # 尚未生效的公告不能当当前价
+        valid_through = None
+        if end:
+            try:
+                valid_through = datetime.strptime(end, "%B %d, %Y").isoformat()
+            except ValueError:
+                valid_through = None
+        candidates.append({
+            "effective_date": eff.isoformat(),
+            "valid_through": valid_through,
+            "name": f"{limit.strip() + ' ' if limit else ''}{year} Price Change",
+        })
+
+    if not candidates:
+        raise RuntimeError(
+            f"Postal Explorer 上没有解析出任何已生效的价格变更 ({PRICE_CHANGE_URL})；"
+            "不猜日期，请人工确认后再抓"
+        )
+    candidates.sort(key=lambda c: c["effective_date"])
+    return candidates[-1]
 
 
 def main() -> int:
@@ -241,10 +309,23 @@ def main() -> int:
     files = siteilang.usps_files(cfg)
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    # 先拿生效日。拿不到就不往下走 —— 没有生效日的价格不能发出去。
+    try:
+        change = fetch_price_change()
+    except RuntimeError as exc:
+        log(f"FATAL {exc}")
+        return 2
+    log(f"  price change: {change['name']}  effective={change['effective_date']}"
+        f"  through={change['valid_through'] or '—'}")
+
     out = {
         "meta": {
             "carrier": "USPS",
             "price_index_url": PRICES_BASE,
+            "price_change_url": PRICE_CHANGE_URL,
+            "price_change": change["name"],
+            "effective_date": change["effective_date"],
+            "valid_through": change["valid_through"],
             "fetched_at": stamp,
             "stale": False,
             "errors": [],
@@ -252,6 +333,25 @@ def main() -> int:
         "services": {},
         "extra_services": {},
     }
+
+    def stamp_dates(parsed: dict, sid: str, url: str) -> dict:
+        """把「文件日期」和「真实生效日」分开记，并交叉校验。
+
+        文件日期应当早于生效日（先发文件、后生效）。如果反过来，
+        说明抓到的是一份日期异常的稿子，宁可报错也不发布。
+        """
+        file_date = parsed.get("file_date")
+        eff = change["effective_date"]
+        if file_date and file_date > eff:
+            raise RuntimeError(
+                f"{sid}: 文件日期 {file_date} 晚于生效日 {eff}，数据不一致 ({url})"
+            )
+        return {
+            "effective_date": eff,
+            "valid_through": change["valid_through"],
+            "price_change": change["name"],
+            "file_date": file_date,
+        }
 
     ok = 0
     for spec in files:
@@ -273,12 +373,12 @@ def main() -> int:
             out["extra_services"][spec["id"]] = {
                 "label": spec["label"],
                 "source_url": url,
-                "effective_date": parsed["effective_date"],
+                **stamp_dates(parsed, spec["id"], url),
                 "items": parsed["items"],
                 "price_count": n,
             }
             ok += 1
-            log(f"  ok    {spec['id']:<30} {n:4d} items   eff={parsed['effective_date']}")
+            log(f"  ok    {spec['id']:<30} {n:4d} items   file={parsed['file_date']}")
             continue
 
         parsed = parse_price_csv(text)
@@ -297,7 +397,7 @@ def main() -> int:
             "label": spec["label"],
             "basis": spec["basis"],
             "source_url": url,
-            "effective_date": parsed["effective_date"],
+            **stamp_dates(parsed, spec["id"], url),
             "flat_rate": parsed["flat_rate"],
             "matrix": parsed["matrix"],
             "fees": parsed["fees"],
@@ -306,7 +406,7 @@ def main() -> int:
         }
         ok += 1
         log(
-            f"  ok    {spec['id']:<30} {n_prices:4d} prices  eff={parsed['effective_date']}  "
+            f"  ok    {spec['id']:<30} {n_prices:4d} prices  file={parsed['file_date']}  "
             f"flat={len(parsed['flat_rate'])} rows={len((parsed['matrix'] or {}).get('rows', []))} "
             f"fees={len(parsed['fees'])} spec={len(parsed['special'])}"
         )

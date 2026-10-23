@@ -63,6 +63,11 @@ SERVICES = USPS["services"]
 EXTRA = USPS.get("extra_services", {})
 FETCHED_AT = USPS["meta"]["fetched_at"]
 STALE = USPS["meta"].get("stale", False)
+# 限时价格有终点（2026-10 这版到 2027-01-17）。整站共用一个，
+# 免得首页、页脚、about 各写一遍还可能写不一致。
+PRICE_CHANGE = USPS["meta"].get("price_change") or ""
+VALID_THROUGH = max((s.get("valid_through") or "" for s in SERVICES.values()), default="")
+PRICE_EXPIRED = bool(VALID_THROUGH and VALID_THROUGH[:10] < TODAY)
 
 PAGES: list[dict] = []   # collected for sitemap / index
 
@@ -90,6 +95,8 @@ def money(v) -> str:
 def pretty_date(iso: str | None) -> str:
     if not iso:
         return "not stated"
+    # valid_through 带时间部分（2027-01-17T00:00:00），日期只取前 10 位。
+    iso = iso[:10]
     try:
         d = datetime.strptime(iso, "%Y-%m-%d")
         return d.strftime("%B %-d, %Y") if os.name != "nt" else d.strftime("%B %d, %Y").replace(" 0", " ")
@@ -314,6 +321,17 @@ def layout(path: str, title: str, desc: str, body: str, jsonld: dict | None = No
     og_url = ""
     if BASE and "example.com" not in BASE:
         og_url = f'<meta property="og:url" content="{esc(url_of(path))}">'
+    # 限时价过期后不能装作还有效。抓取脚本没跑、或者 USPS 换了新价而我们
+    # 还没跟上时，页面自己要说出来 —— 一条过期的价格表比没有价格表更糟，
+    # 因为它看起来是准的。
+    expired_banner = ""
+    if PRICE_EXPIRED:
+        expired_banner = (
+            '<div class="stamp" style="border-color:#A32D2D;color:#A32D2D">'
+            f'<span><b>These rates expired on {esc(pretty_date(VALID_THROUGH))}.</b></span>'
+            '<span>·</span><span>USPS has moved to a new price sheet; '
+            'this page has not been refreshed yet.</span></div>'
+        )
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -339,10 +357,11 @@ def layout(path: str, title: str, desc: str, body: str, jsonld: dict | None = No
   <nav class="main">{nav_html}</nav>
 </div></header>
 <main><div class="wrap">
+{expired_banner}
 {body}
 </div></main>
 <footer class="site"><div class="wrap">
-  <span>{esc(BRAND)} — {esc(NICHE)}. Data from official USPS price files, effective {esc(pretty_date(max((s.get('effective_date') or '') for s in SERVICES.values()) if SERVICES else None))}.</span>
+  <span>{esc(BRAND)} — {esc(NICHE)}. Data from official USPS price files, effective {esc(pretty_date(max((s.get('effective_date') or '') for s in SERVICES.values()) if SERVICES else None))}{f', valid through {esc(pretty_date(VALID_THROUGH))}' if VALID_THROUGH else ''}.</span>
   <span class="foot-links">
     <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
   </span>
@@ -363,9 +382,20 @@ def write_page(path: str, html: str, *, priority: str = "0.6", noindex: bool = F
 
 
 def stamp_block(service: dict) -> str:
+    """每张价格表下面那行出处。
+
+    有效期终点必须显示。2026-10 这版是「限时价格」，官方写明到
+    2027-01-17 为止；只标生效日会让读者以为这是个长期价。
+    """
+    through = service.get("valid_through")
+    limit = (
+        f'<span>·</span><span>Valid through <b>{esc(pretty_date(through))}</b></span>'
+        if through else ""
+    )
     return (
         f'<div class="stamp">'
         f'<span>Effective <b>{esc(pretty_date(service.get("effective_date")))}</b></span>'
+        f'{limit}'
         f'<span>·</span><span>Source: <b>USPS official price file</b></span>'
         f'<span>·</span><span>Published list rate</span>'
         f'</div>'
@@ -470,6 +500,7 @@ def page_home() -> None:
 <p class="lede">Every number on this site comes from the USPS published price files
 and carries its effective date. No averages, no "typically costs", no estimates.</p>
 <div class="stamp"><span>Data effective <b>{esc(pretty_date(eff))}</b></span>
+{f'<span>·</span><span>Valid through <b>{esc(pretty_date(VALID_THROUGH))}</b></span>' if VALID_THROUGH else ''}
 <span>·</span><span><b>{len(SERVICES)}</b> USPS services parsed</span>
 <span>·</span><span>Refreshed every 12 hours</span></div>
 
@@ -880,7 +911,7 @@ def page_retail_vs_commercial() -> None:
 <p class="lede">USPS publishes two price sheets for the same services. Retail is what you
 pay at the counter. Commercial is what you pay with an account or a platform label.
 The gap is not a discount you negotiate — it's printed in the tariff.</p>
-{stamp_block({"effective_date": eff})}
+{stamp_block({"effective_date": eff, "valid_through": VALID_THROUGH})}
 <h2>Average commercial discount by service</h2>
 <div class="scroll"><table><thead><tr><th>Service</th><th>Average gap</th></tr></thead>
 <tbody>{"".join(summary)}</tbody></table></div>
@@ -1062,7 +1093,7 @@ def page_surcharges() -> None:
 <h1>USPS extra services and surcharges {YEAR}</h1>
 <p class="lede">The published add-ons that turn a quoted price into an actual bill:
 certified mail, signature confirmation, insurance, COD, and the size and handling fees.</p>
-{stamp_block({"effective_date": eff})}
+{stamp_block({"effective_date": eff, "valid_through": VALID_THROUGH})}
 <h2>Size and handling surcharges</h2>
 <p class="note">These apply on top of the base rate when your package crosses a size threshold.</p>
 {fee_block}
@@ -1226,8 +1257,17 @@ than a wrong one.</li>
 </ul>
 <h2>Update cadence</h2>
 <p>Price files are re-fetched every {esc(S.get("refresh_human", "12 hours"))}. Last fetch:
-{esc(FETCHED_AT)}. USPS changes prices on published effective dates — we show the date
-from the file itself, not the date we downloaded it.</p>
+{esc(FETCHED_AT)}.</p>
+<p>The effective date is not the download date, and it is not the date printed inside the
+price file either. USPS stamps its CSV files with the day the file was generated — the
+October 2026 files are stamped September 14 but took effect October 4. So we read the
+effective date from the <a href="https://pe.usps.com/PriceChange/Index" rel="nofollow">USPS
+price change notices</a> instead, and every table shows that date.</p>
+{f'''<p>Current price change: <b>{esc(PRICE_CHANGE)}</b>, effective
+{esc(pretty_date(max(s.get("effective_date") or "" for s in SERVICES.values())))} through
+{esc(pretty_date(VALID_THROUGH))}. USPS has announced this as a time-limited change, so the
+figures on this site expire on that date. We will publish the next set when USPS does.</p>'''
+  if VALID_THROUGH else ''}
 <h2>Coverage</h2>
 <p>Currently: USPS domestic services only. FedEx and UPS publish their tariffs as
 multi-hundred-page PDFs whose tables don't extract reliably; adding them is planned but
@@ -1429,7 +1469,12 @@ def main() -> int:
     print(f"built {pages} indexable pages + 404")
     print(f"  services: {len(SERVICES)}  extra-service groups: {len(EXTRA)}")
     print(f"  sitemap entries: {pages}")
+    print(f"  prices: {PRICE_CHANGE} effective {pretty_date(max((s.get('effective_date') or '' for s in SERVICES.values()), default=None))}"
+          f"{f', valid through {pretty_date(VALID_THROUGH)}' if VALID_THROUGH else ''}")
     print(f"  output: {SITE}")
+    if PRICE_EXPIRED:
+        print(f"  WARNING: 价格已于 {pretty_date(VALID_THROUGH)} 过期，页面上会显示过期提示。")
+        print("           跑 fetch_usps.py 抓新价，不要就这样发布。")
     if not INDEXABLE:
         print("  REMINDER: indexable=false — robots.txt 全站 Disallow，Google 不会收录。")
         print("            绑正式域名后把 .ilang/site.ilang 的 indexable 改成 true。")
