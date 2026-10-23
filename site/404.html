@@ -81,6 +81,20 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 .cta{border:1px solid var(--line);border-radius:9px;padding:18px 20px;margin:26px 0;
   background:var(--soft)}
 .cta h3{margin:0 0 8px}
+/* Zone 查找：用户不知道自己在哪个 Zone，这是本页最大的使用断层 */
+.zf{border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin:16px 0;
+  background:var(--soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.zf .zf-t{font-size:13px;color:var(--muted);margin-right:2px}
+.zf label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.zf input{width:92px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;
+  font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.zf button{padding:7px 14px;border:1px solid var(--ink);border-radius:6px;
+  background:var(--ink);color:#fff;font:inherit;font-size:13.5px;cursor:pointer}
+.zf button:disabled{opacity:.55;cursor:default}
+.zf-out{font-size:13px;color:var(--ink)}
+.zf-out b{color:var(--accent)}
+th.zone-hl,td.zone-hl{background:#FAEEDA !important}
+th.zone-hl{color:#854F0B;font-weight:600}
 @media(max-width:700px){
   h1{font-size:25px}.lede{font-size:16px}
   /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */
@@ -115,5 +129,6 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
     <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
   </span>
 </div></footer>
+
 </body>
 </html>

@@ -27,9 +27,20 @@ fi
 echo "== 构建 =="
 "$PY" build.py
 echo
+echo "== 存档状态 =="
+"$PY" archive.py
+echo
 echo "== 预检 =="
+# 这两组是离线、可重复、秒级完成的，必须每次都过。
 "$PY" tools/check_site.py
 "$PY" tools/test_calc_parity.py
+"$PY" tools/test_archive.py
+"$PY" tools/test_zone_parity.py
+# 下面两个不进这条流水线，原因不同：
+#   tools/verify_zones_official.py  要打 USPS 接口逐个核对，几十次请求、几分钟，
+#                                   且依赖外网。改 Zone 数据后手工跑一次。
+#   tools/test_zone_browser.js      要真浏览器 + 本地 http 服务，环境依赖重。
+#                                   改前端交互后手工跑：起服务再 node 它。
 echo
 echo "== 部署 =="
 "${WRANGLER[@]}" deploy

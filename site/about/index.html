@@ -81,6 +81,20 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 .cta{border:1px solid var(--line);border-radius:9px;padding:18px 20px;margin:26px 0;
   background:var(--soft)}
 .cta h3{margin:0 0 8px}
+/* Zone 查找：用户不知道自己在哪个 Zone，这是本页最大的使用断层 */
+.zf{border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin:16px 0;
+  background:var(--soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.zf .zf-t{font-size:13px;color:var(--muted);margin-right:2px}
+.zf label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.zf input{width:92px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;
+  font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.zf button{padding:7px 14px;border:1px solid var(--ink);border-radius:6px;
+  background:var(--ink);color:#fff;font:inherit;font-size:13.5px;cursor:pointer}
+.zf button:disabled{opacity:.55;cursor:default}
+.zf-out{font-size:13px;color:var(--ink)}
+.zf-out b{color:var(--accent)}
+th.zone-hl,td.zone-hl{background:#FAEEDA !important}
+th.zone-hl{color:#854F0B;font-weight:600}
 @media(max-width:700px){
   h1{font-size:25px}.lede{font-size:16px}
   /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */
@@ -108,6 +122,21 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 published at <code>usps.com/business/prices</code>. Each table shows its effective date
 and the exact file it came from. Nothing is estimated, averaged, or carried over from an
 older price sheet.</p>
+<h2>Where the zone comes from</h2>
+<p>A USPS zone is not a region on a map. It is a property of the pair of ZIP codes —
+the one the parcel enters the mail at, and the one that delivers it. The same destination
+is Zone 1 from the next town over and Zone 8 from the other coast, so "what zone is
+California" has no answer. Zone 1 is the local zone, defined as the same NDC as the origin;
+zones 2 through 9 step outward.</p>
+<p>The zone finder on this site reads the
+<a href="https://postcalc.usps.com/DomesticZoneChart/GetZoneChart" rel="nofollow">USPS
+Domestic Zone Chart</a>, effective October 1, 2026.
+The table is downloaded once and searched in your browser — the ZIP codes you type are
+never sent to us or to USPS.</p>
+<p>One case needs care: APO and FPO addresses. USPS does not give them a single zone.
+For 09012 from New York the chart says Zone 1, except Priority Mail and Ground Advantage
+under 16 oz., which are Zone 5. Where that happens we price each service at its own zone
+and say so, instead of quietly using one number for all of them.</p>
 <h2>What we don't do</h2>
 <ul class="tight">
 <li>We don't quote "average" shipping costs. There is no such number — weight, size and
@@ -120,7 +149,7 @@ than a wrong one.</li>
 </ul>
 <h2>Update cadence</h2>
 <p>Price files are re-fetched every 12 hours. Last fetch:
-2026-10-23T04:12:59Z.</p>
+2026-10-23T04:35:36Z.</p>
 <p>The effective date is not the download date, and it is not the date printed inside the
 price file either. USPS stamps its CSV files with the day the file was generated — the
 October 2026 files are stamped September 14 but took effect October 4. So we read the
@@ -143,5 +172,6 @@ not done. We'd rather ship one carrier correctly than three badly.</p>
     <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
   </span>
 </div></footer>
+
 </body>
 </html>

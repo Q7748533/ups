@@ -1,0 +1,11 @@
+# 数据文件必须逐字节稳定。
+#
+# data/archive 下的原始 CSV 在 manifest 里记了 md5，用来判断「官方文件到底变没变」。
+# git 默认会在 checkout 时把 LF 换成 CRLF，字节一变，md5 就永远对不上 ——
+# 存档校验会一直报「文件被改动」，而实际是换行符被动过。
+# 标记为二进制（-text）就完全不做换行转换。
+#
+# 同样道理适用于 zones.json：tools/test_zone_parity.py 和线上复验都按字节比对。
+data/archive/** -text -diff
+data/*.json -text -diff
+site/zones.json -text -diff

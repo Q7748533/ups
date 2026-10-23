@@ -81,6 +81,20 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 .cta{border:1px solid var(--line);border-radius:9px;padding:18px 20px;margin:26px 0;
   background:var(--soft)}
 .cta h3{margin:0 0 8px}
+/* Zone 查找：用户不知道自己在哪个 Zone，这是本页最大的使用断层 */
+.zf{border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin:16px 0;
+  background:var(--soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.zf .zf-t{font-size:13px;color:var(--muted);margin-right:2px}
+.zf label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.zf input{width:92px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;
+  font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.zf button{padding:7px 14px;border:1px solid var(--ink);border-radius:6px;
+  background:var(--ink);color:#fff;font:inherit;font-size:13.5px;cursor:pointer}
+.zf button:disabled{opacity:.55;cursor:default}
+.zf-out{font-size:13px;color:var(--ink)}
+.zf-out b{color:var(--accent)}
+th.zone-hl,td.zone-hl{background:#FAEEDA !important}
+th.zone-hl{color:#854F0B;font-weight:600}
 @media(max-width:700px){
   h1{font-size:25px}.lede{font-size:16px}
   /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */
@@ -109,7 +123,13 @@ The gap is not a discount you negotiate — it's printed in the tariff.</p>
 <h2>Average commercial discount by service</h2>
 <div class="scroll"><table><thead><tr><th>Service</th><th>Average gap</th></tr></thead>
 <tbody><tr><td><a href="/rates/ground-advantage/">Ground Advantage</a></td><td class="num">27%</td></tr><tr><td><a href="/rates/priority-mail/">Priority Mail</a></td><td class="num">17%</td></tr><tr><td><a href="/rates/priority-mail-express/">Priority Mail Express</a></td><td class="num">11%</td></tr></tbody></table></div>
-<h2>Ground Advantage</h2><p class="note">Retail / Commercial, with the commercial discount below.</p><div class="scroll"><table><thead><tr><th>Weight</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead><tbody><tr><td>1 lb</td><td class="num">$10.05 / $8.01<br><span class="note">−20%</span></td><td class="num">$10.45 / $8.08<br><span class="note">−23%</span></td><td class="num">$10.70 / $8.40<br><span class="note">−21%</span></td><td class="num">$11.10 / $8.55<br><span class="note">−23%</span></td><td class="num">$11.70 / $9.29<br><span class="note">−21%</span></td><td class="num">$12.10 / $10.18<br><span class="note">−16%</span></td><td class="num">$12.70 / $10.53<br><span class="note">−17%</span></td><td class="num">$13.65 / $11.22<br><span class="note">−18%</span></td><td class="num">$13.65 / $11.22<br><span class="note">−18%</span></td></tr><tr><td>2 lb</td><td class="num">$11.30 / $8.39<br><span class="note">−26%</span></td><td class="num">$12.00 / $8.48<br><span class="note">−29%</span></td><td class="num">$12.70 / $8.66<br><span class="note">−32%</span></td><td class="num">$13.50 / $8.91<br><span class="note">−34%</span></td><td class="num">$14.85 / $10.50<br><span class="note">−29%</span></td><td class="num">$15.85 / $12.13<br><span class="note">−23%</span></td><td class="num">$17.20 / $12.55<br><span class="note">−27%</span></td><td class="num">$19.80 / $13.42<br><span class="note">−32%</span></td><td class="num">$19.80 / $13.42<br><span class="note">−32%</span></td></tr><tr><td>5 lb</td><td class="num">$13.75 / $10.35<br><span class="note">−25%</span></td><td class="num">$14.35 / $10.41<br><span class="note">−27%</span></td><td class="num">$15.35 / $10.79<br><span class="note">−30%</span></td><td class="num">$16.60 / $11.67<br><span class="note">−30%</span></td><td class="num">$18.85 / $14.53<br><span class="note">−23%</span></td><td class="num">$21.00 / $16.94<br><span class="note">−19%</span></td><td class="num">$23.80 / $18.17<br><span class="note">−24%</span></td><td class="num">$27.45 / $20.24<br><span class="note">−26%</span></td><td class="num">$27.45 / $20.24<br><span class="note">−26%</span></td></tr><tr><td>10 lb</td><td class="num">$16.75 / $12.56<br><span class="note">−25%</span></td><td class="num">$17.10 / $12.91<br><span class="note">−25%</span></td><td class="num">$18.05 / $13.83<br><span class="note">−23%</span></td><td class="num">$20.20 / $15.09<br><span class="note">−25%</span></td><td class="num">$24.25 / $17.81<br><span class="note">−27%</span></td><td class="num">$28.90 / $20.99<br><span class="note">−27%</span></td><td class="num">$34.70 / $23.02<br><span class="note">−34%</span></td><td class="num">$40.85 / $26.39<br><span class="note">−35%</span></td><td class="num">$40.85 / $26.39<br><span class="note">−35%</span></td></tr><tr><td>20 lb</td><td class="num">$24.00 / $17.51<br><span class="note">−27%</span></td><td class="num">$24.20 / $18.11<br><span class="note">−25%</span></td><td class="num">$25.70 / $19.08<br><span class="note">−26%</span></td><td class="num">$28.55 / $20.71<br><span class="note">−27%</span></td><td class="num">$37.90 / $26.68<br><span class="note">−30%</span></td><td class="num">$47.00 / $32.07<br><span class="note">−32%</span></td><td class="num">$58.25 / $36.42<br><span class="note">−37%</span></td><td class="num">$72.15 / $42.14<br><span class="note">−42%</span></td><td class="num">$72.15 / $42.14<br><span class="note">−42%</span></td></tr></tbody></table></div><h2>Priority Mail</h2><p class="note">Retail / Commercial, with the commercial discount below.</p><div class="scroll"><table><thead><tr><th>Weight</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead><tbody><tr><td>1 lb</td><td class="num">$11.50 / $9.44<br><span class="note">−18%</span></td><td class="num">$12.00 / $9.72<br><span class="note">−19%</span></td><td class="num">$12.15 / $10.11<br><span class="note">−17%</span></td><td class="num">$12.40 / $10.80<br><span class="note">−13%</span></td><td class="num">$14.05 / $13.82<br><span class="note">−2%</span></td><td class="num">$15.50 / $15.32<br><span class="note">−1%</span></td><td class="num">$16.60 / $15.93<br><span class="note">−4%</span></td><td class="num">$17.95 / $16.07<br><span class="note">−10%</span></td><td class="num">$35.25 / $33.33<br><span class="note">−5%</span></td></tr><tr><td>2 lb</td><td class="num">$12.45 / $9.50<br><span class="note">−24%</span></td><td class="num">$13.15 / $9.79<br><span class="note">−26%</span></td><td class="num">$13.95 / $10.18<br><span class="note">−27%</span></td><td class="num">$14.85 / $11.19<br><span class="note">−25%</span></td><td class="num">$17.85 / $14.02<br><span class="note">−21%</span></td><td class="num">$19.15 / $16.19<br><span class="note">−15%</span></td><td class="num">$20.45 / $17.16<br><span class="note">−16%</span></td><td class="num">$22.55 / $17.22<br><span class="note">−24%</span></td><td class="num">$43.40 / $35.79<br><span class="note">−18%</span></td></tr><tr><td>5 lb</td><td class="num">$15.10 / $12.04<br><span class="note">−20%</span></td><td class="num">$15.75 / $12.21<br><span class="note">−22%</span></td><td class="num">$16.85 / $13.67<br><span class="note">−19%</span></td><td class="num">$18.30 / $16.37<br><span class="note">−11%</span></td><td class="num">$24.20 / $23.27<br><span class="note">−4%</span></td><td class="num">$29.10 / $28.10<br><span class="note">−3%</span></td><td class="num">$34.80 / $30.85<br><span class="note">−11%</span></td><td class="num">$39.00 / $30.93<br><span class="note">−21%</span></td><td class="num">$75.10 / $64.02<br><span class="note">−15%</span></td></tr><tr><td>10 lb</td><td class="num">$18.60 / $15.15<br><span class="note">−19%</span></td><td class="num">$19.05 / $15.28<br><span class="note">−20%</span></td><td class="num">$20.00 / $17.31<br><span class="note">−13%</span></td><td class="num">$22.55 / $20.27<br><span class="note">−10%</span></td><td class="num">$30.75 / $29.53<br><span class="note">−4%</span></td><td class="num">$42.70 / $35.49<br><span class="note">−17%</span></td><td class="num">$55.65 / $40.32<br><span class="note">−28%</span></td><td class="num">$63.40 / $43.03<br><span class="note">−32%</span></td><td class="num">$123.65 / $89.85<br><span class="note">−27%</span></td></tr><tr><td>20 lb</td><td class="num">$26.80 / $21.61<br><span class="note">−19%</span></td><td class="num">$27.05 / $21.74<br><span class="note">−20%</span></td><td class="num">$28.80 / $24.59<br><span class="note">−15%</span></td><td class="num">$32.35 / $29.34<br><span class="note">−9%</span></td><td class="num">$51.25 / $48.66<br><span class="note">−5%</span></td><td class="num">$75.05 / $56.87<br><span class="note">−24%</span></td><td class="num">$98.85 / $66.68<br><span class="note">−33%</span></td><td class="num">$113.70 / $71.91<br><span class="note">−37%</span></td><td class="num">$221.25 / $149.10<br><span class="note">−33%</span></td></tr></tbody></table></div><h2>Priority Mail Express</h2><p class="note">Retail / Commercial, with the commercial discount below.</p><div class="scroll"><table><thead><tr><th>Weight</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead><tbody><tr><td>1 lb</td><td class="num">$37.30 / $32.99<br><span class="note">−12%</span></td><td class="num">$37.75 / $33.53<br><span class="note">−11%</span></td><td class="num">$39.70 / $35.91<br><span class="note">−10%</span></td><td class="num">$44.85 / $40.45<br><span class="note">−10%</span></td><td class="num">$53.85 / $47.39<br><span class="note">−12%</span></td><td class="num">$58.10 / $51.12<br><span class="note">−12%</span></td><td class="num">$61.60 / $54.36<br><span class="note">−12%</span></td><td class="num">$65.15 / $58.14<br><span class="note">−11%</span></td><td class="num">$86.05 / $76.77<br><span class="note">−11%</span></td></tr><tr><td>2 lb</td><td class="num">$37.65 / $33.43<br><span class="note">−11%</span></td><td class="num">$38.95 / $34.61<br><span class="note">−11%</span></td><td class="num">$42.80 / $38.45<br><span class="note">−10%</span></td><td class="num">$50.50 / $45.31<br><span class="note">−10%</span></td><td class="num">$62.20 / $54.41<br><span class="note">−13%</span></td><td class="num">$67.45 / $58.89<br><span class="note">−13%</span></td><td class="num">$71.30 / $62.51<br><span class="note">−12%</span></td><td class="num">$74.80 / $66.29<br><span class="note">−11%</span></td><td class="num">$99.00 / $87.67<br><span class="note">−11%</span></td></tr><tr><td>5 lb</td><td class="num">$40.25 / $35.58<br><span class="note">−12%</span></td><td class="num">$43.50 / $38.50<br><span class="note">−11%</span></td><td class="num">$53.00 / $46.87<br><span class="note">−12%</span></td><td class="num">$68.30 / $60.64<br><span class="note">−11%</span></td><td class="num">$91.30 / $78.35<br><span class="note">−14%</span></td><td class="num">$99.70 / $85.37<br><span class="note">−14%</span></td><td class="num">$104.65 / $90.01<br><span class="note">−14%</span></td><td class="num">$107.80 / $93.90<br><span class="note">−13%</span></td><td class="num">$142.00 / $123.60<br><span class="note">−13%</span></td></tr><tr><td>10 lb</td><td class="num">$59.30 / $51.68<br><span class="note">−13%</span></td><td class="num">$64.00 / $55.78<br><span class="note">−13%</span></td><td class="num">$77.85 / $69.01<br><span class="note">−11%</span></td><td class="num">$104.40 / $92.99<br><span class="note">−11%</span></td><td class="num">$132.95 / $114.53<br><span class="note">−14%</span></td><td class="num">$142.70 / $122.84<br><span class="note">−14%</span></td><td class="num">$151.15 / $130.51<br><span class="note">−14%</span></td><td class="num">$155.55 / $136.23<br><span class="note">−12%</span></td><td class="num">$206.30 / $180.24<br><span class="note">−13%</span></td></tr><tr><td>20 lb</td><td class="num">$89.25 / $80.50<br><span class="note">−10%</span></td><td class="num">$101.15 / $91.30<br><span class="note">−10%</span></td><td class="num">$136.80 / $124.95<br><span class="note">−9%</span></td><td class="num">$164.25 / $150.70<br><span class="note">−8%</span></td><td class="num">$194.55 / $175.64<br><span class="note">−10%</span></td><td class="num">$201.75 / $181.79<br><span class="note">−10%</span></td><td class="num">$212.85 / $192.54<br><span class="note">−10%</span></td><td class="num">$220.25 / $201.83<br><span class="note">−8%</span></td><td class="num">$291.70 / $267.06<br><span class="note">−8%</span></td></tr></tbody></table></div>
+<h2>Ground Advantage</h2><p class="note">Retail / Commercial, with the commercial discount below.</p><div class="zf">
+<span class="zf-t">Don't know your zone?</span>
+<label>From <input id="zf-from" maxlength="5" inputmode="numeric" placeholder="90001" autocomplete="postal-code"></label>
+<label>To <input id="zf-to" maxlength="5" inputmode="numeric" placeholder="10001" autocomplete="postal-code"></label>
+<button id="zf-go" type="button">Find my zone</button>
+<span class="zf-out" id="zf-out" role="status" aria-live="polite"></span>
+</div><div class="scroll"><table><thead><tr><th>Weight</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead><tbody><tr><td>1 lb</td><td class="num">$10.05 / $8.01<br><span class="note">−20%</span></td><td class="num">$10.45 / $8.08<br><span class="note">−23%</span></td><td class="num">$10.70 / $8.40<br><span class="note">−21%</span></td><td class="num">$11.10 / $8.55<br><span class="note">−23%</span></td><td class="num">$11.70 / $9.29<br><span class="note">−21%</span></td><td class="num">$12.10 / $10.18<br><span class="note">−16%</span></td><td class="num">$12.70 / $10.53<br><span class="note">−17%</span></td><td class="num">$13.65 / $11.22<br><span class="note">−18%</span></td><td class="num">$13.65 / $11.22<br><span class="note">−18%</span></td></tr><tr><td>2 lb</td><td class="num">$11.30 / $8.39<br><span class="note">−26%</span></td><td class="num">$12.00 / $8.48<br><span class="note">−29%</span></td><td class="num">$12.70 / $8.66<br><span class="note">−32%</span></td><td class="num">$13.50 / $8.91<br><span class="note">−34%</span></td><td class="num">$14.85 / $10.50<br><span class="note">−29%</span></td><td class="num">$15.85 / $12.13<br><span class="note">−23%</span></td><td class="num">$17.20 / $12.55<br><span class="note">−27%</span></td><td class="num">$19.80 / $13.42<br><span class="note">−32%</span></td><td class="num">$19.80 / $13.42<br><span class="note">−32%</span></td></tr><tr><td>5 lb</td><td class="num">$13.75 / $10.35<br><span class="note">−25%</span></td><td class="num">$14.35 / $10.41<br><span class="note">−27%</span></td><td class="num">$15.35 / $10.79<br><span class="note">−30%</span></td><td class="num">$16.60 / $11.67<br><span class="note">−30%</span></td><td class="num">$18.85 / $14.53<br><span class="note">−23%</span></td><td class="num">$21.00 / $16.94<br><span class="note">−19%</span></td><td class="num">$23.80 / $18.17<br><span class="note">−24%</span></td><td class="num">$27.45 / $20.24<br><span class="note">−26%</span></td><td class="num">$27.45 / $20.24<br><span class="note">−26%</span></td></tr><tr><td>10 lb</td><td class="num">$16.75 / $12.56<br><span class="note">−25%</span></td><td class="num">$17.10 / $12.91<br><span class="note">−25%</span></td><td class="num">$18.05 / $13.83<br><span class="note">−23%</span></td><td class="num">$20.20 / $15.09<br><span class="note">−25%</span></td><td class="num">$24.25 / $17.81<br><span class="note">−27%</span></td><td class="num">$28.90 / $20.99<br><span class="note">−27%</span></td><td class="num">$34.70 / $23.02<br><span class="note">−34%</span></td><td class="num">$40.85 / $26.39<br><span class="note">−35%</span></td><td class="num">$40.85 / $26.39<br><span class="note">−35%</span></td></tr><tr><td>20 lb</td><td class="num">$24.00 / $17.51<br><span class="note">−27%</span></td><td class="num">$24.20 / $18.11<br><span class="note">−25%</span></td><td class="num">$25.70 / $19.08<br><span class="note">−26%</span></td><td class="num">$28.55 / $20.71<br><span class="note">−27%</span></td><td class="num">$37.90 / $26.68<br><span class="note">−30%</span></td><td class="num">$47.00 / $32.07<br><span class="note">−32%</span></td><td class="num">$58.25 / $36.42<br><span class="note">−37%</span></td><td class="num">$72.15 / $42.14<br><span class="note">−42%</span></td><td class="num">$72.15 / $42.14<br><span class="note">−42%</span></td></tr></tbody></table></div><h2>Priority Mail</h2><p class="note">Retail / Commercial, with the commercial discount below.</p><div class="scroll"><table><thead><tr><th>Weight</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead><tbody><tr><td>1 lb</td><td class="num">$11.50 / $9.44<br><span class="note">−18%</span></td><td class="num">$12.00 / $9.72<br><span class="note">−19%</span></td><td class="num">$12.15 / $10.11<br><span class="note">−17%</span></td><td class="num">$12.40 / $10.80<br><span class="note">−13%</span></td><td class="num">$14.05 / $13.82<br><span class="note">−2%</span></td><td class="num">$15.50 / $15.32<br><span class="note">−1%</span></td><td class="num">$16.60 / $15.93<br><span class="note">−4%</span></td><td class="num">$17.95 / $16.07<br><span class="note">−10%</span></td><td class="num">$35.25 / $33.33<br><span class="note">−5%</span></td></tr><tr><td>2 lb</td><td class="num">$12.45 / $9.50<br><span class="note">−24%</span></td><td class="num">$13.15 / $9.79<br><span class="note">−26%</span></td><td class="num">$13.95 / $10.18<br><span class="note">−27%</span></td><td class="num">$14.85 / $11.19<br><span class="note">−25%</span></td><td class="num">$17.85 / $14.02<br><span class="note">−21%</span></td><td class="num">$19.15 / $16.19<br><span class="note">−15%</span></td><td class="num">$20.45 / $17.16<br><span class="note">−16%</span></td><td class="num">$22.55 / $17.22<br><span class="note">−24%</span></td><td class="num">$43.40 / $35.79<br><span class="note">−18%</span></td></tr><tr><td>5 lb</td><td class="num">$15.10 / $12.04<br><span class="note">−20%</span></td><td class="num">$15.75 / $12.21<br><span class="note">−22%</span></td><td class="num">$16.85 / $13.67<br><span class="note">−19%</span></td><td class="num">$18.30 / $16.37<br><span class="note">−11%</span></td><td class="num">$24.20 / $23.27<br><span class="note">−4%</span></td><td class="num">$29.10 / $28.10<br><span class="note">−3%</span></td><td class="num">$34.80 / $30.85<br><span class="note">−11%</span></td><td class="num">$39.00 / $30.93<br><span class="note">−21%</span></td><td class="num">$75.10 / $64.02<br><span class="note">−15%</span></td></tr><tr><td>10 lb</td><td class="num">$18.60 / $15.15<br><span class="note">−19%</span></td><td class="num">$19.05 / $15.28<br><span class="note">−20%</span></td><td class="num">$20.00 / $17.31<br><span class="note">−13%</span></td><td class="num">$22.55 / $20.27<br><span class="note">−10%</span></td><td class="num">$30.75 / $29.53<br><span class="note">−4%</span></td><td class="num">$42.70 / $35.49<br><span class="note">−17%</span></td><td class="num">$55.65 / $40.32<br><span class="note">−28%</span></td><td class="num">$63.40 / $43.03<br><span class="note">−32%</span></td><td class="num">$123.65 / $89.85<br><span class="note">−27%</span></td></tr><tr><td>20 lb</td><td class="num">$26.80 / $21.61<br><span class="note">−19%</span></td><td class="num">$27.05 / $21.74<br><span class="note">−20%</span></td><td class="num">$28.80 / $24.59<br><span class="note">−15%</span></td><td class="num">$32.35 / $29.34<br><span class="note">−9%</span></td><td class="num">$51.25 / $48.66<br><span class="note">−5%</span></td><td class="num">$75.05 / $56.87<br><span class="note">−24%</span></td><td class="num">$98.85 / $66.68<br><span class="note">−33%</span></td><td class="num">$113.70 / $71.91<br><span class="note">−37%</span></td><td class="num">$221.25 / $149.10<br><span class="note">−33%</span></td></tr></tbody></table></div><h2>Priority Mail Express</h2><p class="note">Retail / Commercial, with the commercial discount below.</p><div class="scroll"><table><thead><tr><th>Weight</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead><tbody><tr><td>1 lb</td><td class="num">$37.30 / $32.99<br><span class="note">−12%</span></td><td class="num">$37.75 / $33.53<br><span class="note">−11%</span></td><td class="num">$39.70 / $35.91<br><span class="note">−10%</span></td><td class="num">$44.85 / $40.45<br><span class="note">−10%</span></td><td class="num">$53.85 / $47.39<br><span class="note">−12%</span></td><td class="num">$58.10 / $51.12<br><span class="note">−12%</span></td><td class="num">$61.60 / $54.36<br><span class="note">−12%</span></td><td class="num">$65.15 / $58.14<br><span class="note">−11%</span></td><td class="num">$86.05 / $76.77<br><span class="note">−11%</span></td></tr><tr><td>2 lb</td><td class="num">$37.65 / $33.43<br><span class="note">−11%</span></td><td class="num">$38.95 / $34.61<br><span class="note">−11%</span></td><td class="num">$42.80 / $38.45<br><span class="note">−10%</span></td><td class="num">$50.50 / $45.31<br><span class="note">−10%</span></td><td class="num">$62.20 / $54.41<br><span class="note">−13%</span></td><td class="num">$67.45 / $58.89<br><span class="note">−13%</span></td><td class="num">$71.30 / $62.51<br><span class="note">−12%</span></td><td class="num">$74.80 / $66.29<br><span class="note">−11%</span></td><td class="num">$99.00 / $87.67<br><span class="note">−11%</span></td></tr><tr><td>5 lb</td><td class="num">$40.25 / $35.58<br><span class="note">−12%</span></td><td class="num">$43.50 / $38.50<br><span class="note">−11%</span></td><td class="num">$53.00 / $46.87<br><span class="note">−12%</span></td><td class="num">$68.30 / $60.64<br><span class="note">−11%</span></td><td class="num">$91.30 / $78.35<br><span class="note">−14%</span></td><td class="num">$99.70 / $85.37<br><span class="note">−14%</span></td><td class="num">$104.65 / $90.01<br><span class="note">−14%</span></td><td class="num">$107.80 / $93.90<br><span class="note">−13%</span></td><td class="num">$142.00 / $123.60<br><span class="note">−13%</span></td></tr><tr><td>10 lb</td><td class="num">$59.30 / $51.68<br><span class="note">−13%</span></td><td class="num">$64.00 / $55.78<br><span class="note">−13%</span></td><td class="num">$77.85 / $69.01<br><span class="note">−11%</span></td><td class="num">$104.40 / $92.99<br><span class="note">−11%</span></td><td class="num">$132.95 / $114.53<br><span class="note">−14%</span></td><td class="num">$142.70 / $122.84<br><span class="note">−14%</span></td><td class="num">$151.15 / $130.51<br><span class="note">−14%</span></td><td class="num">$155.55 / $136.23<br><span class="note">−12%</span></td><td class="num">$206.30 / $180.24<br><span class="note">−13%</span></td></tr><tr><td>20 lb</td><td class="num">$89.25 / $80.50<br><span class="note">−10%</span></td><td class="num">$101.15 / $91.30<br><span class="note">−10%</span></td><td class="num">$136.80 / $124.95<br><span class="note">−9%</span></td><td class="num">$164.25 / $150.70<br><span class="note">−8%</span></td><td class="num">$194.55 / $175.64<br><span class="note">−10%</span></td><td class="num">$201.75 / $181.79<br><span class="note">−10%</span></td><td class="num">$212.85 / $192.54<br><span class="note">−10%</span></td><td class="num">$220.25 / $201.83<br><span class="note">−8%</span></td><td class="num">$291.70 / $267.06<br><span class="note">−8%</span></td></tr></tbody></table></div>
 <div class="caveat"><b>Neither sheet is your price.</b> Both are published list rates.
 Resellers and platforms negotiate further discounts on top of the commercial sheet, and
 those are not public. What this page shows is the part of the gap that is verifiable.</div>
@@ -122,5 +142,123 @@ those are not public. What this page shows is the part of the gap that is verifi
     <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
   </span>
 </div></footer>
+<script>
+(function(){
+  var D=null,P=null;
+  function load(){
+    if(D) return Promise.resolve(D);
+    if(P) return P;
+    P=fetch('/zones.json').then(function(r){
+      if(!r.ok) throw new Error('zones.json '+r.status);
+      return r.json();
+    }).then(function(j){D=j;return j;});
+    return P;
+  }
+  function z5(v){
+    var s=String(v||'').replace(/\D/g,'');
+    return s.length===5?s:null;
+  }
+  function find(o,d,svc){
+    var r=all(o,d);
+    if(!r) return null;
+    if(svc && r.byService[svc]!=null) return r.byService[svc];
+    return r.base;
+  }
+  // 一次查出「基础 Zone + 各服务的例外 Zone」。
+  //
+  // 为什么需要这个：APO/FPO 目的地（090xx、962-966）官方给的不是一个数，
+  // 而是 "The Zone is 1, except for Priority Mail where the Zone is 5"。
+  // 计算器一次报四种服务的价，只设一个 Zone 就会把其中两种算错，
+  // 而且错得没有任何提示。这里把差异原样交出去，由调用方决定怎么用。
+  function all(o,d){
+    var o3=o.slice(0,3), d3=d.slice(0,3);
+    var row=(D.origins||{})[o3];
+    if(!row) return null;
+    var exc=(D.exceptions||{})[o3]||[];
+    var d5=parseInt(d,10), i, e, base=null, fixed=false;
+
+    // 无服务限定的例外优先级最高，命中即定案，服务例外不再参与
+    for(i=0;i<exc.length;i++){e=exc[i];
+      if(!e.service && d5>=e.lo && d5<=e.hi){base=e.zone;fixed=true;break;}
+    }
+    if(!fixed){
+      var b=row.charAt(parseInt(d3,10));
+      base=(b==='-'||b==='')?null:parseInt(b,10);
+    }
+
+    var by={};
+    if(!fixed && base!==null){
+      for(i=0;i<exc.length;i++){e=exc[i];
+        if(!e.service || d5<e.lo || d5>e.hi) continue;
+        var s=e.service.toLowerCase(), name=null;
+        if(s.indexOf('priority mail express')>=0) name='Priority Mail Express';
+        else if(s.indexOf('priority mail')>=0) name='Priority Mail';
+        else if(s.indexOf('ground advantage')>=0) name='Ground Advantage';
+        if(name && by[name]==null && e.zone!==base) by[name]=e.zone;
+      }
+    }
+    return {base:base, byService:by};
+  }
+  function highlight(zone){
+    var hit=false;
+    document.querySelectorAll('table').forEach(function(t){
+      var ths=t.querySelectorAll('thead th'), idx=-1, i, k;
+      for(i=0;i<ths.length;i++){
+        ths[i].classList.remove('zone-hl');
+        var m=/^Zone\s+(\d)$/i.exec(ths[i].textContent.trim());
+        if(m && parseInt(m[1],10)===zone) idx=i;
+      }
+      t.querySelectorAll('tbody tr').forEach(function(tr){
+        for(k=0;k<tr.children.length;k++) tr.children[k].classList.remove('zone-hl');
+      });
+      if(idx>=0){
+        ths[idx].classList.add('zone-hl');
+        t.querySelectorAll('tbody tr').forEach(function(tr){
+          if(tr.children[idx]) tr.children[idx].classList.add('zone-hl');
+        });
+        hit=true;
+      }
+    });
+    return hit;
+  }
+  window.ParcelZone={load:load,find:find,all:all,highlight:highlight,z5:z5};
+})();
+</script><script>
+(function(){
+  var btn=document.getElementById('zf-go');
+  if(!btn||!window.ParcelZone) return;
+  var from=document.getElementById('zf-from'),to=document.getElementById('zf-to'),
+      out=document.getElementById('zf-out'),
+      box=btn.closest?btn.closest('.zf'):null,
+      svc=box?box.getAttribute('data-svc'):null;
+  function run(){
+    var a=ParcelZone.z5(from.value), b=ParcelZone.z5(to.value);
+    if(!a||!b){out.textContent='Enter two 5-digit ZIP codes.';return;}
+    btn.disabled=true; out.textContent='Looking up\u2026';
+    ParcelZone.load().then(function(){
+      var r=ParcelZone.all(a,b);
+      btn.disabled=false;
+      if(!r||r.base===null){out.textContent='No zone found for '+a+' to '+b+'. Check the ZIP codes.';return;}
+      var ovr=[],k;
+      for(k in r.byService){ovr.push(k+' at Zone '+r.byService[k]);}
+      // 本页是单一服务且该服务有例外 Zone 时，高亮的是它自己的 Zone
+      var use=r.base, why='';
+      if(svc && r.byService[svc]!=null){use=r.byService[svc];why=' for '+svc;}
+      var ok=ParcelZone.highlight(use);
+      out.innerHTML='Zone <b>'+use+'</b>'+why+'.'
+        +(ok?' That column is highlighted below.':'')
+        +(ovr.length?' <b>APO/FPO address:</b> USPS assigns '+ovr.join(', ')
+          +' here, not the base zone.':'');
+    }).catch(function(){
+      btn.disabled=false;
+      out.textContent='Zone lookup is unavailable right now. Use the zone table below.';
+    });
+  }
+  btn.addEventListener('click',run);
+  [from,to].forEach(function(el){
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();run();}});
+  });
+})();
+</script>
 </body>
 </html>

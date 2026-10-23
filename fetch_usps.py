@@ -20,6 +20,7 @@ import urllib.request
 from datetime import datetime, timezone
 
 import siteilang
+import archive
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "data")
@@ -354,6 +355,7 @@ def main() -> int:
         }
 
     ok = 0
+    raw_texts: dict[str, str] = {}
     for spec in files:
         url = PRICES_BASE + spec["filename"]
         try:
@@ -362,6 +364,9 @@ def main() -> int:
             log(f"  FAIL  {spec['id']:<30} {exc}")
             out["meta"]["errors"].append({"id": spec["id"], "error": str(exc)})
             continue
+
+        # 解析成功才留原文。解析失败的稿子不进存档，免得以后把一份
+        # 有问题的文件当成历史真相重算。
 
         if spec["id"] in ("extra-services", "other-services"):
             parsed = parse_extra_services(text)
@@ -377,6 +382,7 @@ def main() -> int:
                 "items": parsed["items"],
                 "price_count": n,
             }
+            raw_texts[spec["filename"]] = text
             ok += 1
             log(f"  ok    {spec['id']:<30} {n:4d} items   file={parsed['file_date']}")
             continue
@@ -404,6 +410,7 @@ def main() -> int:
             "special": parsed["special"],
             "price_count": n_prices,
         }
+        raw_texts[spec["filename"]] = text
         ok += 1
         log(
             f"  ok    {spec['id']:<30} {n_prices:4d} prices  file={parsed['file_date']}  "
@@ -421,6 +428,23 @@ def main() -> int:
         json.dump(out, fh, indent=1, ensure_ascii=False)
 
     log(f"\nwrote {path} — {ok}/{len(files)} sources, {len(out['meta']['errors'])} dropped")
+
+    # 存档放在写 usps.json 之后：数据文件先落盘，存档失败也不会让这次抓取白跑。
+    # 但存档失败要报出来，不能静默 —— 丢一天的存档就是永久少一个数据点。
+    try:
+        manifest = archive.snapshot(raw_texts, {
+            "effective_date": change["effective_date"],
+            "valid_through": change["valid_through"],
+            "price_change": change["name"],
+            "source_base": PRICES_BASE,
+            "origin": "live-fetch",
+        })
+        revs = sum(int(r.get("revision") or 1) - 1 for r in manifest["files"].values())
+        log(f"archived data/archive/{change['effective_date']}/ — "
+            f"{len(manifest['files'])} files" + (f", {revs} revision(s)" if revs else ""))
+    except (OSError, ValueError, RuntimeError) as exc:
+        log(f"WARNING 存档失败: {exc}")
+        return 3
     return 0
 
 

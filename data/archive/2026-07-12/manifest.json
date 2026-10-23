@@ -1,0 +1,143 @@
+{
+ "caveat": "回填自 Postal Explorer 的 07082026 构建。USPS 另发布了 07102026 的 Change Log 与 Notice 123 PDF，说明 7/12 生效前还有一次修订，但修订后的 CSV 未公开，本存档可能与该版最终生效稿存在差异。",
+ "effective_date": "2026-07-12",
+ "encoding": "utf-8, BOM stripped",
+ "files": {
+  "dom-extra-services.csv": {
+   "bytes": 2316,
+   "file": "raw/dom-extra-services.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "78984948d7bec990853bb9cf55470aa3",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zipdom-extra-services.csv"
+  },
+  "dom-other-services.csv": {
+   "bytes": 2223,
+   "file": "raw/dom-other-services.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "da69fa7de5a3f64592305c59351ebf78",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zipdom-other-services.csv"
+  },
+  "m-bpm-parcels.csv": {
+   "bytes": 1486,
+   "file": "raw/m-bpm-parcels.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "9fd6abac9df4d22fb02a2abacad8c73f",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zipm-bpm-parcels.csv"
+  },
+  "m-fcm-comm-flats.csv": {
+   "bytes": 1150,
+   "file": "raw/m-fcm-comm-flats.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "d9c4ebfd3215cca43cc9dd53fc75331c",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zipm-fcm-comm-flats.csv"
+  },
+  "m-fcm-comm-letters.csv": {
+   "bytes": 1945,
+   "file": "raw/m-fcm-comm-letters.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "5042ee352ea55f1e84f256659ca79925",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zipm-fcm-comm-letters.csv"
+  },
+  "m-library-mail-retail-comm.csv": {
+   "bytes": 816,
+   "file": "raw/m-library-mail-retail-comm.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "bf10d049a02ed5fb097ab481bd4a7993",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zipm-library-mail-retail-comm.csv"
+  },
+  "m-media-mail-retail-and-comm.csv": {
+   "bytes": 815,
+   "file": "raw/m-media-mail-retail-and-comm.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "2ed8df157335657ad3b6431fa8e401bf",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zipm-media-mail-retail-and-comm.csv"
+  },
+  "s-ground-advantage-com.csv": {
+   "bytes": 5160,
+   "file": "raw/s-ground-advantage-com.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "50091642f5a35ba31d3c722bc19df343",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zips-ground-advantage-com.csv"
+  },
+  "s-ground-advantage-retail.csv": {
+   "bytes": 5091,
+   "file": "raw/s-ground-advantage-retail.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "ddd1d87e3e07579db0348b84b9219c2f",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zips-ground-advantage-retail.csv"
+  },
+  "s-pm-com.csv": {
+   "bytes": 5862,
+   "file": "raw/s-pm-com.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "a6c632a49a3c9423eef919ac85ec6c2e",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zips-pm-com.csv"
+  },
+  "s-pm-retail.csv": {
+   "bytes": 5706,
+   "file": "raw/s-pm-retail.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "ad5f75b738319f8bbd87849c4da72c8c",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zips-pm-retail.csv"
+  },
+  "s-pme-com.csv": {
+   "bytes": 5475,
+   "file": "raw/s-pme-com.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "b677d1cd62217f4fb9dcab9c2b2ba959",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zips-pme-com.csv"
+  },
+  "s-pme-retail.csv": {
+   "bytes": 5345,
+   "file": "raw/s-pme-retail.csv",
+   "first_seen": "2026-10-23T04:36:51Z",
+   "last_seen": "2026-10-23T04:36:51Z",
+   "md5": "9311a7e6e4885078981b5297387c43b2",
+   "origin": "backfill:postal-explorer-zip (07082026 build)",
+   "revision": 1,
+   "source_url": "https://pe.usps.com/resources/PriceChange/July%202026%20Price%20Change%20-%2007082026%20-%20Notice%20123.zips-pme-retail.csv"
+  }
+ },
+ "first_seen": "2026-10-23T04:36:51Z",
+ "last_seen": "2026-10-23T04:36:51Z",
+ "price_change": "July 2026 Price Change",
+ "superseded_by": "2026-10-04",
+ "superseded_by_note": "站点观察，非 USPS 官方字段",
+ "valid_through": null
+}

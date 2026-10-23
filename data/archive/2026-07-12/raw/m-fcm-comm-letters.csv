@@ -1,0 +1,52 @@
+First-Class Mail - Commercial,,,,,Final,,7/8/2026,
+,,,,,
+Letters and Postcards,,,,,,
+,Automation,,,Nonautomation Machinable,,Nonautomation Nonmachinable,,
+Weight Not Over (ounces),5-Digit,3-Digit,Mixed,3-Digit,Mixed,5-Digit,3-Digit,Mixed
+1,0.621,0.672,0.707,0.674,0.721,0.844,0.979,1.128
+2,0.621,0.672,0.707,0.674,0.721,0.844,0.979,1.128
+3,0.621,0.672,0.707,0.674,0.721,0.844,0.979,1.128
+3.5,0.621,0.672,0.707,0.674,0.721,0.844,0.979,1.128
+,,,,,,,,
+Postcard,0.453,0.478,0.495,-,-,-,-,-
+,,,,,
+Postcard Machinable Presorted,0.501,
+,,,,,
+,,,,,
+Residual Single-Piece Letters,,,,,
+Weight Not Over (ounces),,,,,
+1,0.82,,,,
+2,0.82,,,,,
+3,0.82,,,,,
+3.5,0.82,,,,,
+
+Share Mail Letters and Postcards (formerly Alternate Postage),,
+Weight Not Over (ounces),Share Mail Letters,Share Mail Postcards
+1,0.86,0.67
+
+Single Piece - Letters & Postcards,,,,
+,,,Pieces from USPS MKT Mail,
+Weight Not Over (ounces),Cross Reference to PS Form 3600-FCM,,Weight Not Over (ounces),(B7 and B12)
+1,0.78,"B6, B11, D6, D13",1,0.82
+2,1.07,"B6, B11, D6",2,1.11
+3,1.36,"B6, B11, D6",3,1.40
+3.5,1.65,"B6, B11, D6",3.5,1.69
+Postcard,0.65,B2,-,-
+,,,,
+Subtract $0.005 for each addressed piece that complies with the requirements for the Full-Service Intelligent Mail option.
+Subtract $0.002 for each letter that complies with the Seamless Acceptance option requirements.
+Letters Round-Trip Mailer/Letter-Shaped DVD
+,Automation,,,Nonautomation Machinable,,Single-Piece
+Weight Not Over (ounces),5-Digit,3-Digit,Mixed,3-Digit,Mixed,
+,,,,,,
+1,0.621,0.672,0.707,0.674,0.721,0.78
+SCF Pallet Discount (Subtract),,
+3-Digit Automation Letters,0.003,
+5-Digit Automation Letters,0.003,
+3-Digit Nonautomation Machinable Letters,0.003,
+5-Digit Nonautomation Nonmachinable Letters,0.003,
+3-Digit Nonautomation Nonmachinable Letters,0.003,
+,,
+3-Digit Automation Postcards,0.002,
+5-Digit Automation Postcards,0.002,
+Nonautomation Postcards,0.002,

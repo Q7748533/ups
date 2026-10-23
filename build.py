@@ -69,6 +69,158 @@ PRICE_CHANGE = USPS["meta"].get("price_change") or ""
 VALID_THROUGH = max((s.get("valid_through") or "" for s in SERVICES.values()), default="")
 PRICE_EXPIRED = bool(VALID_THROUGH and VALID_THROUGH[:10] < TODAY)
 
+# Zone 表单独一份文件。缺失时不阻断构建（见 write_zones），所以这里也要能容忍缺文件。
+ZONE_META: dict = {}
+_zone_path = os.path.join(DATA, "zones.json")
+if os.path.exists(_zone_path):
+    try:
+        with open(_zone_path, encoding="utf-8") as fh:
+            ZONE_META = json.load(fh).get("meta") or {}
+    except (OSError, ValueError):
+        ZONE_META = {}
+
+
+# Zone 查找的前端逻辑。与 tools/fetch_zones.py 的 lookup_zone() 必须逐条一致，
+# 由 tools/test_zone_parity.py 用 node 真跑这段 JS 来对拍 —— 在 Python 里
+# 复刻一份逻辑做对照是没用的，两份会一起漂移。
+ZONE_JS = r"""
+(function(){
+  var D=null,P=null;
+  function load(){
+    if(D) return Promise.resolve(D);
+    if(P) return P;
+    P=fetch('/zones.json').then(function(r){
+      if(!r.ok) throw new Error('zones.json '+r.status);
+      return r.json();
+    }).then(function(j){D=j;return j;});
+    return P;
+  }
+  function z5(v){
+    var s=String(v||'').replace(/\D/g,'');
+    return s.length===5?s:null;
+  }
+  function find(o,d,svc){
+    var r=all(o,d);
+    if(!r) return null;
+    if(svc && r.byService[svc]!=null) return r.byService[svc];
+    return r.base;
+  }
+  // 一次查出「基础 Zone + 各服务的例外 Zone」。
+  //
+  // 为什么需要这个：APO/FPO 目的地（090xx、962-966）官方给的不是一个数，
+  // 而是 "The Zone is 1, except for Priority Mail where the Zone is 5"。
+  // 计算器一次报四种服务的价，只设一个 Zone 就会把其中两种算错，
+  // 而且错得没有任何提示。这里把差异原样交出去，由调用方决定怎么用。
+  function all(o,d){
+    var o3=o.slice(0,3), d3=d.slice(0,3);
+    var row=(D.origins||{})[o3];
+    if(!row) return null;
+    var exc=(D.exceptions||{})[o3]||[];
+    var d5=parseInt(d,10), i, e, base=null, fixed=false;
+
+    // 无服务限定的例外优先级最高，命中即定案，服务例外不再参与
+    for(i=0;i<exc.length;i++){e=exc[i];
+      if(!e.service && d5>=e.lo && d5<=e.hi){base=e.zone;fixed=true;break;}
+    }
+    if(!fixed){
+      var b=row.charAt(parseInt(d3,10));
+      base=(b==='-'||b==='')?null:parseInt(b,10);
+    }
+
+    var by={};
+    if(!fixed && base!==null){
+      for(i=0;i<exc.length;i++){e=exc[i];
+        if(!e.service || d5<e.lo || d5>e.hi) continue;
+        var s=e.service.toLowerCase(), name=null;
+        if(s.indexOf('priority mail express')>=0) name='Priority Mail Express';
+        else if(s.indexOf('priority mail')>=0) name='Priority Mail';
+        else if(s.indexOf('ground advantage')>=0) name='Ground Advantage';
+        if(name && by[name]==null && e.zone!==base) by[name]=e.zone;
+      }
+    }
+    return {base:base, byService:by};
+  }
+  function highlight(zone){
+    var hit=false;
+    document.querySelectorAll('table').forEach(function(t){
+      var ths=t.querySelectorAll('thead th'), idx=-1, i, k;
+      for(i=0;i<ths.length;i++){
+        ths[i].classList.remove('zone-hl');
+        var m=/^Zone\s+(\d)$/i.exec(ths[i].textContent.trim());
+        if(m && parseInt(m[1],10)===zone) idx=i;
+      }
+      t.querySelectorAll('tbody tr').forEach(function(tr){
+        for(k=0;k<tr.children.length;k++) tr.children[k].classList.remove('zone-hl');
+      });
+      if(idx>=0){
+        ths[idx].classList.add('zone-hl');
+        t.querySelectorAll('tbody tr').forEach(function(tr){
+          if(tr.children[idx]) tr.children[idx].classList.add('zone-hl');
+        });
+        hit=true;
+      }
+    });
+    return hit;
+  }
+  window.ParcelZone={load:load,find:find,all:all,highlight:highlight,z5:z5};
+})();
+"""
+
+# 费率页/对比页用：查到后高亮表格那一列
+ZONE_UI_HTML = """<div class="zf">
+<span class="zf-t">Don't know your zone?</span>
+<label>From <input id="zf-from" maxlength="5" inputmode="numeric" placeholder="90001" autocomplete="postal-code"></label>
+<label>To <input id="zf-to" maxlength="5" inputmode="numeric" placeholder="10001" autocomplete="postal-code"></label>
+<button id="zf-go" type="button">Find my zone</button>
+<span class="zf-out" id="zf-out" role="status" aria-live="polite"></span>
+</div>"""
+
+# 单服务费率页 -> 该页服务的正式名。APO/FPO 目的地每个服务的 Zone 可能不同，
+# 知道这一页是哪个服务，才能高亮真正对应的那一列，而不是先高亮错的再补一句免责。
+ZONE_PAGE_SERVICE = {
+    "/rates/priority-mail/": "Priority Mail",
+    "/rates/priority-mail-express/": "Priority Mail Express",
+    "/rates/ground-advantage/": "Ground Advantage",
+}
+
+ZONE_UI_JS = r"""
+(function(){
+  var btn=document.getElementById('zf-go');
+  if(!btn||!window.ParcelZone) return;
+  var from=document.getElementById('zf-from'),to=document.getElementById('zf-to'),
+      out=document.getElementById('zf-out'),
+      box=btn.closest?btn.closest('.zf'):null,
+      svc=box?box.getAttribute('data-svc'):null;
+  function run(){
+    var a=ParcelZone.z5(from.value), b=ParcelZone.z5(to.value);
+    if(!a||!b){out.textContent='Enter two 5-digit ZIP codes.';return;}
+    btn.disabled=true; out.textContent='Looking up\u2026';
+    ParcelZone.load().then(function(){
+      var r=ParcelZone.all(a,b);
+      btn.disabled=false;
+      if(!r||r.base===null){out.textContent='No zone found for '+a+' to '+b+'. Check the ZIP codes.';return;}
+      var ovr=[],k;
+      for(k in r.byService){ovr.push(k+' at Zone '+r.byService[k]);}
+      // 本页是单一服务且该服务有例外 Zone 时，高亮的是它自己的 Zone
+      var use=r.base, why='';
+      if(svc && r.byService[svc]!=null){use=r.byService[svc];why=' for '+svc;}
+      var ok=ParcelZone.highlight(use);
+      out.innerHTML='Zone <b>'+use+'</b>'+why+'.'
+        +(ok?' That column is highlighted below.':'')
+        +(ovr.length?' <b>APO/FPO address:</b> USPS assigns '+ovr.join(', ')
+          +' here, not the base zone.':'');
+    }).catch(function(){
+      btn.disabled=false;
+      out.textContent='Zone lookup is unavailable right now. Use the zone table below.';
+    });
+  }
+  btn.addEventListener('click',run);
+  [from,to].forEach(function(el){
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();run();}});
+  });
+})();
+"""
+
 PAGES: list[dict] = []   # collected for sitemap / index
 
 
@@ -93,15 +245,24 @@ def money(v) -> str:
 
 
 def pretty_date(iso: str | None) -> str:
+    """把 ISO 日期排成人读的样子；不是 ISO 就原样返回。
+
+    以前这里无条件截前 10 位，结果 "October 1, 2026" 被截成 "October 1,"，
+    年份没了 —— 页面照常渲染，只是少了一个年份，不报错也不显眼。
+    只有 ISO 形态（2026-10-04 或带时间）才做截断。
+    """
     if not iso:
         return "not stated"
+    s = str(iso).strip()
+    if not re.match(r"^\d{4}-\d{2}-\d{2}", s):
+        return s
     # valid_through 带时间部分（2027-01-17T00:00:00），日期只取前 10 位。
-    iso = iso[:10]
+    s = s[:10]
     try:
-        d = datetime.strptime(iso, "%Y-%m-%d")
+        d = datetime.strptime(s, "%Y-%m-%d")
         return d.strftime("%B %-d, %Y") if os.name != "nt" else d.strftime("%B %d, %Y").replace(" 0", " ")
     except ValueError:
-        return iso
+        return s
 
 
 def url_of(path: str) -> str:
@@ -243,6 +404,20 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 .cta{border:1px solid var(--line);border-radius:9px;padding:18px 20px;margin:26px 0;
   background:var(--soft)}
 .cta h3{margin:0 0 8px}
+/* Zone 查找：用户不知道自己在哪个 Zone，这是本页最大的使用断层 */
+.zf{border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin:16px 0;
+  background:var(--soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.zf .zf-t{font-size:13px;color:var(--muted);margin-right:2px}
+.zf label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.zf input{width:92px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;
+  font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.zf button{padding:7px 14px;border:1px solid var(--ink);border-radius:6px;
+  background:var(--ink);color:#fff;font:inherit;font-size:13.5px;cursor:pointer}
+.zf button:disabled{opacity:.55;cursor:default}
+.zf-out{font-size:13px;color:var(--ink)}
+.zf-out b{color:var(--accent)}
+th.zone-hl,td.zone-hl{background:#FAEEDA !important}
+th.zone-hl{color:#854F0B;font-weight:600}
 @media(max-width:700px){
   h1{font-size:25px}.lede{font-size:16px}
   /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */
@@ -315,6 +490,27 @@ def layout(path: str, title: str, desc: str, body: str, jsonld: dict | None = No
         for href, label in NAV
     )
     robots = '<meta name="robots" content="noindex,follow">' if noindex else ""
+    # 有 Zone 表格的页面自动挂上查找工具，插在第一张表前面。
+    # 计算器页单独处理：它要的是把 Zone 填进下拉框，不是高亮某一列。
+    zone_scripts = ""
+    if ">Zone 1<" in body and path != "/calculator/":
+        # 插在「第一张带 Zone 列的表」前面，而不是第一张表前面。
+        # priority-mail 页第一张表是 Flat Rate（不分 Zone），把查找框放在那儿，
+        # 读者会以为它管的是那张表。
+        zpos = body.find(">Zone 1<")
+        at = body.rfind('<div class="scroll">', 0, zpos)
+        if at < 0:
+            at = body.rfind("<table", 0, zpos)
+        if at < 0:
+            at = body.find('<div class="scroll">')
+        if at >= 0:
+            zf = ZONE_UI_HTML
+            svc = ZONE_PAGE_SERVICE.get(path)
+            if svc:
+                zf = zf.replace('<div class="zf">',
+                                f'<div class="zf" data-svc="{esc(svc)}">')
+            body = body[:at] + zf + body[at:]
+            zone_scripts = f"<script>{ZONE_JS}</script><script>{ZONE_UI_JS}</script>"
     ld = ld_block(jsonld, _crumb_jsonld(path, body))
     # og:url 必须是绝对地址，相对路径在这里是无效标签。测试期 base_url 还是
     # 占位域名时宁可不输出这一条，也不要写一个指向不存在域名的地址。
@@ -366,6 +562,7 @@ def layout(path: str, title: str, desc: str, body: str, jsonld: dict | None = No
     <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
   </span>
 </div></footer>
+{zone_scripts}
 </body>
 </html>"""
 
@@ -1184,14 +1381,31 @@ service at once — no rounding, no "from $X".</p>
   <select id="z" style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:15px">
     {"".join(f'<option value="{i}"{" selected" if i == int(SSR_Z) else ""}>Zone {i}</option>' for i in range(1, 10))}
   </select>
+  <div style="border-top:1px solid var(--line);margin:16px 0 0;padding-top:14px">
+    <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:5px">
+      Don't know your zone? Enter both ZIP codes and we'll set it</label>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input id="zf-from" maxlength="5" inputmode="numeric" placeholder="From ZIP" autocomplete="postal-code"
+        style="flex:1;min-width:108px;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:15px">
+      <input id="zf-to" maxlength="5" inputmode="numeric" placeholder="To ZIP" autocomplete="postal-code"
+        style="flex:1;min-width:108px;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:15px">
+      <button id="zf-go" type="button"
+        style="padding:9px 16px;border:1px solid var(--ink);border-radius:6px;background:var(--ink);color:#fff;font:inherit;font-size:14px;cursor:pointer">Find</button>
+    </div>
+    <p class="note" id="zf-out" role="status" aria-live="polite"></p>
+  </div>
 </div>
 <h2>Result</h2>
 <div id="out">{ssr_html}</div>
 <p class="note">Zone is set by the distance between origin and destination ZIP codes.
 Zone 1 is local; Zone 8 crosses the country; Zone 9 covers certain non-contiguous destinations.</p>
 {LIST_NOTE}
+<script>{ZONE_JS}</script>
 <script>
 var RATES={js};
+// APO/FPO 目的地每个服务可能是不同的 Zone，这里存「服务名 -> 该服务的 Zone」。
+// 为空表示所有服务共用下拉框那个 Zone。
+var ZOVR={{}};
 function fmt(v){{return v==null?"—":"$"+v.toFixed(2);}}
 function calc(){{
   var w=parseFloat(document.getElementById("w").value);
@@ -1202,27 +1416,75 @@ function calc(){{
   for(var name in RATES){{
     var tiers=RATES[name],hit=null;
     for(var i=0;i<tiers.length;i++){{if(tiers[i].w>=w-1e-9){{hit=tiers[i];break;}}}}
-    if(!hit){{rows.push([name,null,hit]);continue;}}
-    var p=hit.z[z];
+    if(!hit){{rows.push([name,null,hit,null]);continue;}}
+    // 该服务有例外 Zone 就用例外，否则用下拉框的值
+    var zz=(ZOVR[name]!=null)?String(ZOVR[name]):z;
+    var p=hit.z[zz];
     // Media Mail / Library Mail 不分 Zone，数据里只有一个 "single" 键；
     // 少了这一步这些服务在计算器里会全部显示「—」，把最便宜的选项藏起来。
     if(p==null)p=hit.z["single"];
-    if(p==null){{rows.push([name,null,hit]);continue;}}
+    if(p==null){{rows.push([name,null,hit,null]);continue;}}
     if(best==null||p<best){{best=p;bestName=name;}}
-    rows.push([name,p,hit]);
+    rows.push([name,p,hit,zz!==z?zz:null]);
   }}
   var html='<div class="scroll"><table><thead><tr><th>Service</th><th>Priced at</th><th>Price</th></tr></thead><tbody>';
   rows.forEach(function(r){{
     var cls=(r[1]!=null&&r[1]===best)?"num best":"num";
-    html+='<tr><td>'+r[0]+'</td><td>'+(r[2]?r[2].label:"—")+'</td><td class="'+cls+'">'+fmt(r[1])+'</td></tr>';
+    var at=(r[2]?r[2].label:"—")+(r[3]?" · Zone "+r[3]:"");
+    html+='<tr><td>'+r[0]+'</td><td>'+at+'</td><td class="'+cls+'">'+fmt(r[1])+'</td></tr>';
   }});
   html+='</tbody></table></div>';
+  var ovr=[];
+  for(var k in ZOVR){{if(ZOVR[k]!=null)ovr.push(k+" at Zone "+ZOVR[k]);}}
+  if(ovr.length){{
+    html+='<p class="note"><b>APO/FPO destination.</b> USPS does not use one zone here: '
+      +ovr.join(", ")+'. The rows above already use the right zone for each service.</p>';
+  }}
   if(best!=null){{html+='<p class="note">Cheapest published rate for this weight and zone: <b>'+bestName+' at '+fmt(best)+'</b>.</p>';}}
   out.innerHTML=html;
 }}
 document.getElementById("w").addEventListener("input",calc);
-document.getElementById("z").addEventListener("change",calc);
+// 手动改 Zone 就等于放弃了刚才那对 ZIP 的服务级例外，必须清掉，
+// 否则页面上会留着上一次目的地算出来的价。
+document.getElementById("z").addEventListener("change",function(){{ZOVR={{}};calc();}});
 calc();
+
+// 从两个 ZIP 反推 Zone，直接填进上面的下拉框。
+// 用户不知道自己是几区，让他自己去猜是本页最大的使用断层。
+(function(){{
+  var btn=document.getElementById("zf-go");
+  if(!btn||!window.ParcelZone) return;
+  var f=document.getElementById("zf-from"),t=document.getElementById("zf-to"),
+      o=document.getElementById("zf-out");
+  function run(){{
+    var a=ParcelZone.z5(f.value),b=ParcelZone.z5(t.value);
+    if(!a||!b){{o.textContent="Enter two 5-digit ZIP codes.";return;}}
+    btn.disabled=true;o.textContent="Looking up…";
+    ParcelZone.load().then(function(){{
+      var r=ParcelZone.all(a,b);
+      btn.disabled=false;
+      if(!r||r.base===null){{o.textContent="No zone found for "+a+" to "+b+". Check the ZIP codes.";return;}}
+      ZOVR=r.byService||{{}};
+      document.getElementById("z").value=String(r.base);
+      calc();
+      var ovr=[];
+      for(var k in ZOVR){{if(ZOVR[k]!=null)ovr.push(k+" at Zone "+ZOVR[k]);}}
+      if(ovr.length){{
+        o.innerHTML="Zone <b>"+r.base+"</b> set. This is an APO/FPO address — "
+          +ovr.join(", ")+". Prices below already account for that.";
+      }}else{{
+        o.innerHTML="Zone <b>"+r.base+"</b> set — prices updated.";
+      }}
+    }}).catch(function(){{
+      btn.disabled=false;
+      o.textContent="Zone lookup is unavailable right now. Pick your zone above.";
+    }});
+  }}
+  btn.addEventListener("click",run);
+  [f,t].forEach(function(el){{
+    el.addEventListener("keydown",function(e){{if(e.key==="Enter"){{e.preventDefault();run();}}}});
+  }});
+}})();
 </script>
 """
     write_page(
@@ -1245,6 +1507,21 @@ def page_about() -> None:
 published at <code>usps.com/business/prices</code>. Each table shows its effective date
 and the exact file it came from. Nothing is estimated, averaged, or carried over from an
 older price sheet.</p>
+<h2>Where the zone comes from</h2>
+<p>A USPS zone is not a region on a map. It is a property of the pair of ZIP codes —
+the one the parcel enters the mail at, and the one that delivers it. The same destination
+is Zone 1 from the next town over and Zone 8 from the other coast, so "what zone is
+California" has no answer. Zone 1 is the local zone, defined as the same NDC as the origin;
+zones 2 through 9 step outward.</p>
+<p>The zone finder on this site reads the
+<a href="https://postcalc.usps.com/DomesticZoneChart/GetZoneChart" rel="nofollow">USPS
+Domestic Zone Chart</a>{f", effective {esc(pretty_date(ZONE_META.get('effective_date')))}" if ZONE_META.get("effective_date") else ""}.
+The table is downloaded once and searched in your browser — the ZIP codes you type are
+never sent to us or to USPS.</p>
+<p>One case needs care: APO and FPO addresses. USPS does not give them a single zone.
+For 09012 from New York the chart says Zone 1, except Priority Mail and Ground Advantage
+under 16 oz., which are Zone 5. Where that happens we price each service at its own zone
+and say so, instead of quietly using one number for all of them.</p>
 <h2>What we don't do</h2>
 <ul class="tight">
 <li>We don't quote "average" shipping costs. There is no such number — weight, size and
@@ -1292,6 +1569,9 @@ def page_privacy() -> None:
 <p>This site is a static website. It sets no cookies of its own and has no accounts,
 no sign-up, and no forms that submit data anywhere. The calculator runs entirely in your
 browser — the weight and zone you enter never leave your device.</p>
+<p>The zone finder works the same way. The zone table is a static file downloaded to your
+browser; the ZIP codes you type into it are matched on your device and are not sent to us,
+to USPS, or to anyone else.</p>
 <h2>Server logs</h2>
 <p>Our hosting provider records standard request logs (IP address, user agent, requested
 URL, timestamp) for security and abuse prevention. These are retained per the provider's
@@ -1338,6 +1618,26 @@ def page_404() -> None:
     )
     with open(os.path.join(SITE, "404.html"), "w", encoding="utf-8") as fh:
         fh.write(html)
+
+
+def write_zones() -> None:
+    """把 Zone 查询表复制进产物目录。
+
+    这份数据不进页面 HTML：它约 1MB，内嵌到 9 个页面里就是 9MB。
+    改成独立文件 + 按需 fetch，浏览器缓存一次就够了。
+
+    文件不存在时不报错 —— Zone 查找是增强功能，缺了页面照常可用，
+    前端会显示「暂时不可用」并让读者看表格。
+    """
+    src = os.path.join(DATA, "zones.json")
+    if not os.path.exists(src):
+        print("  WARNING: data/zones.json 缺失，Zone 查找工具将显示为不可用。")
+        print("           跑 tools/fetch_zones.py 生成。")
+        return
+    dst = os.path.join(SITE, "zones.json")
+    shutil.copyfile(src, dst)
+    kb = os.path.getsize(dst) / 1024
+    print(f"  zones: {kb:.0f} KB -> /zones.json")
 
 
 def write_sitemap() -> None:
@@ -1404,14 +1704,38 @@ def write_headers() -> None:
 
 /robots.txt
   Cache-Control: public, max-age=3600
+
+/zones.json
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 """
     with open(os.path.join(SITE, "_headers"), "w", encoding="utf-8") as fh:
         fh.write(body)
 
 
+def clean_dir(path: str) -> None:
+    """清空构建输出目录。
+
+    为什么不用 shutil.rmtree：本机的 Python 装了一层 safe-delete 垫片，会把
+    rmtree 改道去回收站，而回收站在大目录上会失败。失败时目录已经被删掉一半，
+    构建直接死在中途，留下一个半空的 site/ —— 比不删更糟。
+
+    这里用逐项删除，不经过那层垫片；删不掉就明确报错，不假装成功。
+    """
+    if not os.path.isdir(path):
+        return
+    for root, dirs, files in os.walk(path, topdown=False):
+        for name in files:
+            os.remove(os.path.join(root, name))
+        for name in dirs:
+            target = os.path.join(root, name)
+            if os.path.islink(target):
+                os.unlink(target)
+            else:
+                os.rmdir(target)
+
+
 def main() -> int:
-    if os.path.isdir(SITE):
-        shutil.rmtree(SITE)
+    clean_dir(SITE)
     os.makedirs(SITE, exist_ok=True)
 
     page_home()
@@ -1461,6 +1785,7 @@ def main() -> int:
     page_privacy()
     page_404()
     write_sitemap()
+    write_zones()
     write_robots()
     write_favicon()
     write_headers()

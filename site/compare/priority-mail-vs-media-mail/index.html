@@ -81,6 +81,20 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 .cta{border:1px solid var(--line);border-radius:9px;padding:18px 20px;margin:26px 0;
   background:var(--soft)}
 .cta h3{margin:0 0 8px}
+/* Zone 查找：用户不知道自己在哪个 Zone，这是本页最大的使用断层 */
+.zf{border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin:16px 0;
+  background:var(--soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.zf .zf-t{font-size:13px;color:var(--muted);margin-right:2px}
+.zf label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.zf input{width:92px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;
+  font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.zf button{padding:7px 14px;border:1px solid var(--ink);border-radius:6px;
+  background:var(--ink);color:#fff;font:inherit;font-size:13.5px;cursor:pointer}
+.zf button:disabled{opacity:.55;cursor:default}
+.zf-out{font-size:13px;color:var(--ink)}
+.zf-out b{color:var(--accent)}
+th.zone-hl,td.zone-hl{background:#FAEEDA !important}
+th.zone-hl{color:#854F0B;font-weight:600}
 @media(max-width:700px){
   h1{font-size:25px}.lede{font-size:16px}
   /* 移动端 5 项都保留：隐藏第 5 项会让 /ship/ 整个板块在手机上失去入口 */
@@ -107,7 +121,13 @@ code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5
 <h2>Side by side, same package</h2>
 <p class="note">Each cell shows <b>Priority Mail / Media Mail</b>. The green figure is
 the cheaper of the two at that weight and zone.</p>
-<div class="scroll"><table><thead><tr><th>Weight</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead>
+<div class="zf">
+<span class="zf-t">Don't know your zone?</span>
+<label>From <input id="zf-from" maxlength="5" inputmode="numeric" placeholder="90001" autocomplete="postal-code"></label>
+<label>To <input id="zf-to" maxlength="5" inputmode="numeric" placeholder="10001" autocomplete="postal-code"></label>
+<button id="zf-go" type="button">Find my zone</button>
+<span class="zf-out" id="zf-out" role="status" aria-live="polite"></span>
+</div><div class="scroll"><table><thead><tr><th>Weight</th><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th><th>Zone 4</th><th>Zone 5</th><th>Zone 6</th><th>Zone 7</th><th>Zone 8</th><th>Zone 9</th></tr></thead>
 <tbody><tr><td>1 lb</td><td class="num"><span class="">$11.50</span> / $4.39</td><td class="num"><span class="">$12.00</span> / $4.39</td><td class="num"><span class="">$12.15</span> / $4.39</td><td class="num"><span class="">$12.40</span> / $4.39</td><td class="num"><span class="">$14.05</span> / $4.39</td><td class="num"><span class="">$15.50</span> / $4.39</td><td class="num"><span class="">$16.60</span> / $4.39</td><td class="num"><span class="">$17.95</span> / $4.39</td><td class="num"><span class="">$35.25</span> / $4.39</td></tr><tr><td>2 lb</td><td class="num"><span class="">$12.45</span> / $5.13</td><td class="num"><span class="">$13.15</span> / $5.13</td><td class="num"><span class="">$13.95</span> / $5.13</td><td class="num"><span class="">$14.85</span> / $5.13</td><td class="num"><span class="">$17.85</span> / $5.13</td><td class="num"><span class="">$19.15</span> / $5.13</td><td class="num"><span class="">$20.45</span> / $5.13</td><td class="num"><span class="">$22.55</span> / $5.13</td><td class="num"><span class="">$43.40</span> / $5.13</td></tr><tr><td>5 lb</td><td class="num"><span class="">$15.10</span> / $7.34</td><td class="num"><span class="">$15.75</span> / $7.34</td><td class="num"><span class="">$16.85</span> / $7.34</td><td class="num"><span class="">$18.30</span> / $7.34</td><td class="num"><span class="">$24.20</span> / $7.34</td><td class="num"><span class="">$29.10</span> / $7.34</td><td class="num"><span class="">$34.80</span> / $7.34</td><td class="num"><span class="">$39.00</span> / $7.34</td><td class="num"><span class="">$75.10</span> / $7.34</td></tr><tr><td>10 lb</td><td class="num"><span class="">$18.60</span> / $11.02</td><td class="num"><span class="">$19.05</span> / $11.02</td><td class="num"><span class="">$20.00</span> / $11.02</td><td class="num"><span class="">$22.55</span> / $11.02</td><td class="num"><span class="">$30.75</span> / $11.02</td><td class="num"><span class="">$42.70</span> / $11.02</td><td class="num"><span class="">$55.65</span> / $11.02</td><td class="num"><span class="">$63.40</span> / $11.02</td><td class="num"><span class="">$123.65</span> / $11.02</td></tr><tr><td>20 lb</td><td class="num"><span class="">$26.80</span> / $18.39</td><td class="num"><span class="">$27.05</span> / $18.39</td><td class="num"><span class="">$28.80</span> / $18.39</td><td class="num"><span class="">$32.35</span> / $18.39</td><td class="num"><span class="">$51.25</span> / $18.39</td><td class="num"><span class="">$75.05</span> / $18.39</td><td class="num"><span class="">$98.85</span> / $18.39</td><td class="num"><span class="">$113.70</span> / $18.39</td><td class="num"><span class="">$221.25</span> / $18.39</td></tr></tbody></table></div>
 <h2>What the table says</h2>
 <p>Media Mail is dramatically cheaper, but it is not a general-purpose parcel service. If your box holds anything other than qualifying media, USPS can return it or bill you the higher rate. See the Media Mail eligibility list before relying on it.</p>
@@ -125,5 +145,123 @@ the cheaper of the two at that weight and zone.</p>
     <a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/sitemap.xml">Sitemap</a>
   </span>
 </div></footer>
+<script>
+(function(){
+  var D=null,P=null;
+  function load(){
+    if(D) return Promise.resolve(D);
+    if(P) return P;
+    P=fetch('/zones.json').then(function(r){
+      if(!r.ok) throw new Error('zones.json '+r.status);
+      return r.json();
+    }).then(function(j){D=j;return j;});
+    return P;
+  }
+  function z5(v){
+    var s=String(v||'').replace(/\D/g,'');
+    return s.length===5?s:null;
+  }
+  function find(o,d,svc){
+    var r=all(o,d);
+    if(!r) return null;
+    if(svc && r.byService[svc]!=null) return r.byService[svc];
+    return r.base;
+  }
+  // 一次查出「基础 Zone + 各服务的例外 Zone」。
+  //
+  // 为什么需要这个：APO/FPO 目的地（090xx、962-966）官方给的不是一个数，
+  // 而是 "The Zone is 1, except for Priority Mail where the Zone is 5"。
+  // 计算器一次报四种服务的价，只设一个 Zone 就会把其中两种算错，
+  // 而且错得没有任何提示。这里把差异原样交出去，由调用方决定怎么用。
+  function all(o,d){
+    var o3=o.slice(0,3), d3=d.slice(0,3);
+    var row=(D.origins||{})[o3];
+    if(!row) return null;
+    var exc=(D.exceptions||{})[o3]||[];
+    var d5=parseInt(d,10), i, e, base=null, fixed=false;
+
+    // 无服务限定的例外优先级最高，命中即定案，服务例外不再参与
+    for(i=0;i<exc.length;i++){e=exc[i];
+      if(!e.service && d5>=e.lo && d5<=e.hi){base=e.zone;fixed=true;break;}
+    }
+    if(!fixed){
+      var b=row.charAt(parseInt(d3,10));
+      base=(b==='-'||b==='')?null:parseInt(b,10);
+    }
+
+    var by={};
+    if(!fixed && base!==null){
+      for(i=0;i<exc.length;i++){e=exc[i];
+        if(!e.service || d5<e.lo || d5>e.hi) continue;
+        var s=e.service.toLowerCase(), name=null;
+        if(s.indexOf('priority mail express')>=0) name='Priority Mail Express';
+        else if(s.indexOf('priority mail')>=0) name='Priority Mail';
+        else if(s.indexOf('ground advantage')>=0) name='Ground Advantage';
+        if(name && by[name]==null && e.zone!==base) by[name]=e.zone;
+      }
+    }
+    return {base:base, byService:by};
+  }
+  function highlight(zone){
+    var hit=false;
+    document.querySelectorAll('table').forEach(function(t){
+      var ths=t.querySelectorAll('thead th'), idx=-1, i, k;
+      for(i=0;i<ths.length;i++){
+        ths[i].classList.remove('zone-hl');
+        var m=/^Zone\s+(\d)$/i.exec(ths[i].textContent.trim());
+        if(m && parseInt(m[1],10)===zone) idx=i;
+      }
+      t.querySelectorAll('tbody tr').forEach(function(tr){
+        for(k=0;k<tr.children.length;k++) tr.children[k].classList.remove('zone-hl');
+      });
+      if(idx>=0){
+        ths[idx].classList.add('zone-hl');
+        t.querySelectorAll('tbody tr').forEach(function(tr){
+          if(tr.children[idx]) tr.children[idx].classList.add('zone-hl');
+        });
+        hit=true;
+      }
+    });
+    return hit;
+  }
+  window.ParcelZone={load:load,find:find,all:all,highlight:highlight,z5:z5};
+})();
+</script><script>
+(function(){
+  var btn=document.getElementById('zf-go');
+  if(!btn||!window.ParcelZone) return;
+  var from=document.getElementById('zf-from'),to=document.getElementById('zf-to'),
+      out=document.getElementById('zf-out'),
+      box=btn.closest?btn.closest('.zf'):null,
+      svc=box?box.getAttribute('data-svc'):null;
+  function run(){
+    var a=ParcelZone.z5(from.value), b=ParcelZone.z5(to.value);
+    if(!a||!b){out.textContent='Enter two 5-digit ZIP codes.';return;}
+    btn.disabled=true; out.textContent='Looking up\u2026';
+    ParcelZone.load().then(function(){
+      var r=ParcelZone.all(a,b);
+      btn.disabled=false;
+      if(!r||r.base===null){out.textContent='No zone found for '+a+' to '+b+'. Check the ZIP codes.';return;}
+      var ovr=[],k;
+      for(k in r.byService){ovr.push(k+' at Zone '+r.byService[k]);}
+      // 本页是单一服务且该服务有例外 Zone 时，高亮的是它自己的 Zone
+      var use=r.base, why='';
+      if(svc && r.byService[svc]!=null){use=r.byService[svc];why=' for '+svc;}
+      var ok=ParcelZone.highlight(use);
+      out.innerHTML='Zone <b>'+use+'</b>'+why+'.'
+        +(ok?' That column is highlighted below.':'')
+        +(ovr.length?' <b>APO/FPO address:</b> USPS assigns '+ovr.join(', ')
+          +' here, not the base zone.':'');
+    }).catch(function(){
+      btn.disabled=false;
+      out.textContent='Zone lookup is unavailable right now. Use the zone table below.';
+    });
+  }
+  btn.addEventListener('click',run);
+  [from,to].forEach(function(el){
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();run();}});
+  });
+})();
+</script>
 </body>
 </html>

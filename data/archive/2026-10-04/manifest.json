@@ -1,0 +1,140 @@
+{
+ "effective_date": "2026-10-04",
+ "encoding": "utf-8, BOM stripped",
+ "files": {
+  "dom-extra-services.csv": {
+   "bytes": 2346,
+   "file": "raw/dom-extra-services.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "4395252f1a011782d5b193ffcade3b9c",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/dom-extra-services.csv"
+  },
+  "dom-other-services.csv": {
+   "bytes": 2224,
+   "file": "raw/dom-other-services.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "bd95028d4e9694593d265aaea4d429fb",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/dom-other-services.csv"
+  },
+  "m-bpm-parcels.csv": {
+   "bytes": 1487,
+   "file": "raw/m-bpm-parcels.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "14e359e6dbd11c87361c6ee8b84a4b84",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/m-bpm-parcels.csv"
+  },
+  "m-fcm-comm-flats.csv": {
+   "bytes": 1151,
+   "file": "raw/m-fcm-comm-flats.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "6c04b46e2aabc458be229cc1f5fc9269",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/m-fcm-comm-flats.csv"
+  },
+  "m-fcm-comm-letters.csv": {
+   "bytes": 1946,
+   "file": "raw/m-fcm-comm-letters.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "55540e79b9dcaeaa0a48cc4cb5d1f2ca",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/m-fcm-comm-letters.csv"
+  },
+  "m-library-mail-retail-comm.csv": {
+   "bytes": 817,
+   "file": "raw/m-library-mail-retail-comm.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "31a22fc7260953f3e50b076da23c107e",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/m-library-mail-retail-comm.csv"
+  },
+  "m-media-mail-retail-and-comm.csv": {
+   "bytes": 816,
+   "file": "raw/m-media-mail-retail-and-comm.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "8bc7670357f202882d089055d599f23a",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/m-media-mail-retail-and-comm.csv"
+  },
+  "s-ground-advantage-com.csv": {
+   "bytes": 5190,
+   "file": "raw/s-ground-advantage-com.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "1e79e21afb8dccbf3d572af2065c392f",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/s-ground-advantage-com.csv"
+  },
+  "s-ground-advantage-retail.csv": {
+   "bytes": 5117,
+   "file": "raw/s-ground-advantage-retail.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "3b1c884f4fd326fb6372fadbdac12f61",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/s-ground-advantage-retail.csv"
+  },
+  "s-pm-com.csv": {
+   "bytes": 5878,
+   "file": "raw/s-pm-com.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "75ff50ee7157cc25060caf0ce0021791",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/s-pm-com.csv"
+  },
+  "s-pm-retail.csv": {
+   "bytes": 5720,
+   "file": "raw/s-pm-retail.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "15704a49fcc30db731384d4bd82af5a6",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/s-pm-retail.csv"
+  },
+  "s-pme-com.csv": {
+   "bytes": 5485,
+   "file": "raw/s-pme-com.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "86cdad75b4c8b468e694dec6050e2d83",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/s-pme-com.csv"
+  },
+  "s-pme-retail.csv": {
+   "bytes": 5350,
+   "file": "raw/s-pme-retail.csv",
+   "first_seen": "2026-10-23T04:35:21Z",
+   "last_seen": "2026-10-23T04:35:49Z",
+   "md5": "b7416af87b85ab8d1b1c6d69f9ff0bbe",
+   "origin": "live-fetch",
+   "revision": 1,
+   "source_url": "https://www.usps.com/business/prices/2026/s-pme-retail.csv"
+  }
+ },
+ "first_seen": "2026-10-23T04:35:21Z",
+ "last_seen": "2026-10-23T04:35:49Z",
+ "price_change": "Time-Limited 2026 Price Change",
+ "valid_through": "2027-01-17T00:00:00"
+}
